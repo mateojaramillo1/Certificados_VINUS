@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Empleado;
+use App\Models\Empresa;
 
 class AuthController
 {
@@ -52,6 +53,8 @@ class AuthController
 
     public function showRegister()
     {
+        // Obtener todas las empresas para el select
+        $empresas = Empresa::getAll();
         require __DIR__ . '/../views/auth/register.php';
     }
 
