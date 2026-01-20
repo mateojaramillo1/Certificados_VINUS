@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS plantillas (
   descripcion TEXT DEFAULT NULL,
   tipo_documento VARCHAR(64) DEFAULT 'Certificado Laboral',
   ruta_archivo VARCHAR(512) NOT NULL,
+  activa TINYINT(1) DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_plantilla)

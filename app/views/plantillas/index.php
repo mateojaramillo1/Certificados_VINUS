@@ -69,38 +69,38 @@ if (session_status() === PHP_SESSION_NONE) {
                     <tbody>
                         <?php foreach ($plantillas as $p): ?>
                             <tr>
-                                <td class="fw-bold text-muted"><?php echo $p->id; ?></td>
-                                <td><strong><?php echo htmlspecialchars($p->nombre); ?></strong></td>
-                                <td class="small text-muted"><?php echo htmlspecialchars($p->descripcion ?: 'Sin descripción'); ?></td>
+                                <td class="fw-bold text-muted"><?php echo $p['id_plantilla']; ?></td>
+                                <td><strong><?php echo htmlspecialchars($p['nombre']); ?></strong></td>
+                                <td class="small text-muted"><?php echo htmlspecialchars($p['descripcion'] ?: 'Sin descripción'); ?></td>
                                 <td>
-                                    <a href="public/plantillas/<?php echo htmlspecialchars($p->archivo); ?>" class="btn btn-sm btn-light border" download>
+                                    <a href="public/plantillas/<?php echo htmlspecialchars($p['ruta_archivo']); ?>" class="btn btn-sm btn-light border" download>
                                         <i class="bi bi-download"></i> Descargar .docx
                                     </a>
                                 </td>
                                 <td>
-                                    <?php if ($p->activa == 1): ?>
+                                    <?php if (isset($p['activa']) && $p['activa'] == 1): ?>
                                         <span class="badge bg-success"><i class="bi bi-check-circle"></i> Activa</span>
                                     <?php else: ?>
                                         <span class="badge bg-secondary">Inactiva</span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="small"><?php echo date('d/m/Y', strtotime($p->fecha_creacion)); ?></td>
+                                <td class="small"><?php echo date('d/m/Y', strtotime($p['created_at'])); ?></td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-1">
-                                        <?php if ($p->activa != 1): ?>
-                                            <a href="index.php?controller=plantilla&action=activar&id=<?php echo $p->id; ?>" 
+                                        <?php if (!isset($p['activa']) || $p['activa'] != 1): ?>
+                                            <a href="index.php?controller=plantilla&action=activar&id=<?php echo $p['id_plantilla']; ?>" 
                                                class="btn btn-sm btn-outline-success" 
                                                onclick="return confirm('¿Activar esta plantilla? El sistema usará este formato para todos los nuevos certificados.')">
                                                 Activar
                                             </a>
                                         <?php endif; ?>
                                         
-                                        <a href="index.php?controller=plantilla&action=editar&id=<?php echo $p->id; ?>" 
+                                        <a href="index.php?controller=plantilla&action=editar&id=<?php echo $p['id_plantilla']; ?>" 
                                            class="btn btn-sm btn-warning">
                                             Editar
                                         </a>
                                         
-                                        <a href="index.php?controller=plantilla&action=eliminar&id=<?php echo $p->id; ?>" 
+                                        <a href="index.php?controller=plantilla&action=eliminar&id=<?php echo $p['id_plantilla']; ?>" 
                                            class="btn btn-sm btn-danger" 
                                            onclick="return confirm('¿Está seguro de eliminar esta plantilla? Esta acción borrará el archivo físico del servidor.')">
                                             Eliminar
