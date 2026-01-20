@@ -1,9 +1,3 @@
-Tu código de PlantillaController está muy bien estructurado. He realizado los ajustes necesarios para que sea totalmente compatible con la base de datos que creamos en phpMyAdmin y para que el manejo de archivos sea más robusto.
-
-Aquí tienes el código optimizado:
-
-PHP
-
 <?php
 
 namespace App\Controllers;
@@ -75,7 +69,7 @@ class PlantillaController
                         }
                     }
                     
-                    // Guardar en la DB (Asegúrate que tu modelo use los campos correctos)
+                    // Guardar en la DB
                     PlantillaWord::create([
                         'nombre' => $nombre,
                         'descripcion' => $descripcion,
