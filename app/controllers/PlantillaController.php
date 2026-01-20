@@ -102,6 +102,37 @@ class PlantillaController
         }
         
         header('Location: index.php?controller=plantilla&action=index');
+        exit;
+    }
+
+    public function eliminar()
+    {
+        $this->checkAdmin();
+        $id = $_GET['id'] ?? null;
+        
+        if (!$id) {
+            $_SESSION['error'] = 'ID de plantilla no válido';
+            header('Location: index.php?controller=plantilla&action=index');
+            exit;
+        }
+
+        // Verificar que no sea la única plantilla activa
+        $plantilla = PlantillaWord::findById($id);
+        
+        if (!$plantilla) {
+            $_SESSION['error'] = 'La plantilla no existe';
+            header('Location: index.php?controller=plantilla&action=index');
+            exit;
+        }
+
+        if (PlantillaWord::delete($id)) {
+            $_SESSION['mensaje'] = 'Plantilla eliminada correctamente';
+        } else {
+            $_SESSION['error'] = 'No se pudo eliminar la plantilla';
+        }
+        
+        header('Location: index.php?controller=plantilla&action=index');
+        exit;
     }
 
     private function convertirDocADocx($rutaDoc, $nombreBase)
