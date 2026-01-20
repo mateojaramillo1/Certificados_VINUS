@@ -1,96 +1,112 @@
 <?php
 
-namespace App\Core;
+namespace App\Models;
 
-use PhpOffice\PhpWord\TemplateProcessor;
-use App\Models\PlantillaWord;
-use App\Core\NumeroALetras;
+use App\Core\Database;
+use PDO;
 
-class WordGenerator
+class PlantillaWord
 {
-    private $plantilla;
-    private $templateProcessor;
-
-    public function __construct()
+    public static function findAll()
     {
-        // Busca en la tabla 'plantillas_pdf' la que tenga activa = 1
-        $this->plantilla = PlantillaWord::getActiva();
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
         
-        if (!$this->plantilla) {
-            throw new \Exception('No se encontró ninguna plantilla activa en la base de datos.');
-        }
+        $stmt = $conn->prepare("SELECT * FROM plantillas ORDER BY created_at DESC");
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function generarCertificado($empleado, $incluirSalario = true)
+    public static function findById($id)
     {
-        $rutaPlantilla = $this->plantilla->getRutaCompleta();
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
         
-        if (!file_exists($rutaPlantilla)) {
-            throw new \Exception('El archivo físico .docx no existe en: ' . $rutaPlantilla);
-        }
-
-        $this->templateProcessor = new TemplateProcessor($rutaPlantilla);
-
-        // --- DATOS DE LA EMPRESA (Configuración manual o archivo config) ---
-        $company = [
-            'nombre' => 'VINUS S.A.S',
-            'nit' => '900.123.456-7',
-            'ciudad' => 'Medellín'
-        ];
-
-        // --- PROCESAMIENTO DE FECHAS ---
-        $meses = ['', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-        $fechaIngreso = new \DateTime($empleado->fecha_ingreso);
+        $stmt = $conn->prepare("SELECT * FROM plantillas WHERE id_plantilla = :id LIMIT 1");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
         
-        // --- REEMPLAZO DE VARIABLES EN EL WORD ---
-        // Estas etiquetas deben ir así en tu Word: ${nombre}, ${cedula}, etc.
-        $this->templateProcessor->setValue('nombre', mb_strtoupper($empleado->nombre, 'UTF-8'));
-        $this->templateProcessor->setValue('cedula', $empleado->cedula);
-        $this->templateProcessor->setValue('cargo', $empleado->cargo);
-        $this->templateProcessor->setValue('tipo_contrato', $empleado->tipo_contrato ?? 'término indefinido');
-        $this->templateProcessor->setValue('fecha_ingreso', $fechaIngreso->format('d/m/Y'));
-
-        // Manejo de Salario
-        if ($incluirSalario && !empty($empleado->salario)) {
-            $salarioLetras = NumeroALetras::convertir($empleado->salario);
-            $this->templateProcessor->setValue('salario_numero', number_format($empleado->salario, 0, ',', '.'));
-            $this->templateProcessor->setValue('salario_letras', mb_strtoupper($salarioLetras, 'UTF-8'));
-        } else {
-            $this->templateProcessor->setValue('salario_numero', 'N/A');
-            $this->templateProcessor->setValue('salario_letras', '(Sueldo no revelado)');
-        }
-
-        // Datos de expedición (Hoy)
-        $this->templateProcessor->setValue('dia', date('j'));
-        $this->templateProcessor->setValue('dia_letras', NumeroALetras::convertirDia(date('j')));
-        $this->templateProcessor->setValue('mes', $meses[(int)date('n')]);
-        $this->templateProcessor->setValue('anio', date('Y'));
-        $this->templateProcessor->setValue('empresa_nombre', $company['nombre']);
-        $this->templateProcessor->setValue('empresa_nit', $company['nit']);
-        $this->templateProcessor->setValue('ciudad', $company['ciudad']);
-
-        return $this->templateProcessor;
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function descargar($nombreSugerido = 'Certificado')
+    public static function getActiva()
     {
-        // Crear archivo temporal
-        $tempFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $nombreSugerido . '_' . time() . '.docx';
-        $this->templateProcessor->saveAs($tempFile);
-
-        // Forzar descarga del navegador
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-        header('Content-Disposition: attachment; filename="' . $nombreSugerido . '.docx"');
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($tempFile));
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
         
-        readfile($tempFile);
-        unlink($tempFile); // Elimina el temporal después de enviar
-        exit;
+        $stmt = $conn->prepare("SELECT * FROM plantillas WHERE activa = 1 LIMIT 1");
+        $stmt->execute();
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public static function create($data)
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+        
+        $stmt = $conn->prepare("
+            INSERT INTO plantillas (nombre, descripcion, tipo_documento, ruta_archivo)
+            VALUES (:nombre, :descripcion, :tipo_documento, :ruta_archivo)
+        ");
+        
+        $stmt->bindParam(':nombre', $data['nombre']);
+        $stmt->bindParam(':descripcion', $data['descripcion']);
+        $tipoDoc = $data['tipo_documento'] ?? 'Certificado Laboral';
+        $stmt->bindParam(':tipo_documento', $tipoDoc);
+        $stmt->bindParam(':ruta_archivo', $data['archivo']);
+        
+        if ($stmt->execute()) {
+            return self::findById($conn->lastInsertId());
+        }
+        
+        return false;
+    }
+
+    public static function activar($id)
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+        
+        // Primero desactivar todas
+        $conn->exec("UPDATE plantillas SET activa = 0");
+        
+        // Activar la seleccionada
+        $stmt = $conn->prepare("UPDATE plantillas SET activa = 1 WHERE id_plantilla = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        
+        return $stmt->execute();
+    }
+
+    public static function delete($id)
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+        
+        // Obtener la plantilla para eliminar el archivo físico
+        $plantilla = self::findById($id);
+        
+        if ($plantilla) {
+            $rutaArchivo = __DIR__ . '/../../public/plantillas/' . $plantilla['ruta_archivo'];
+            if (file_exists($rutaArchivo)) {
+                unlink($rutaArchivo);
+            }
+            
+            $stmt = $conn->prepare("DELETE FROM plantillas WHERE id_plantilla = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            
+            return $stmt->execute();
+        }
+        
+        return false;
+    }
+
+    public static function getRutaCompleta($plantilla)
+    {
+        if (is_array($plantilla)) {
+            return __DIR__ . '/../../public/plantillas/' . $plantilla['ruta_archivo'];
+        }
+        return null;
     }
 }
-
