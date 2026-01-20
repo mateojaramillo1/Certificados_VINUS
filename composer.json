@@ -1,0 +1,21 @@
+{
+    "name": "certificados/app",
+    "description": "Aplicación simple para generar certificados",
+    "require": {
+        "vlucas/phpdotenv": "^5.5",
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi": "^2.3",
+        "phpoffice/phpword": "^1.0",
+        "dompdf/dompdf": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
+        }
+    }
+}

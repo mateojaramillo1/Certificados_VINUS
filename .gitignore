@@ -1,0 +1,32 @@
+# Dependencias de Composer
+/vendor/
+
+# Archivos de entorno
+.env
+.env.local
+
+# Archivos de configuración con credenciales sensibles
+# (Descomenta si tienes archivos específicos)
+# app/config/database.php
+
+# Archivos generados
+public/plantillas/*.docx
+public/plantillas/*.pdf
+
+# Archivos temporales de sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+error_log
+
+# Archivos de cache
+*.cache
