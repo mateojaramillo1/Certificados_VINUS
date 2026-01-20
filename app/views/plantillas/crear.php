@@ -1,71 +1,157 @@
-Para completar esta funcionalidad de administración en VINUS S.A.S, necesitas el controlador que procese la subida del archivo físico (.docx) y guarde el registro en la base de datos vinculándolo con el modelo PlantillaWord que vimos al inicio.
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Plantilla - Sistema de Certificados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.php?controller=auth&action=dashboard">
+                <i class="bi bi-award"></i> Sistema de Certificados
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text text-white me-3">
+                    <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuario'); ?>
+                </span>
+                <a href="index.php?controller=auth&action=logout" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-box-arrow-right"></i> Salir
+                </a>
+            </div>
+        </div>
+    </nav>
 
-Aquí tienes el código del controlador para gestionar la creación de plantillas:
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-file-earmark-word"></i> Nueva Plantilla de Certificado
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <?php if (isset($errors) && !empty($errors)): ?>
+                            <div class="alert alert-danger">
+                                <strong>Se encontraron errores:</strong>
+                                <ul class="mb-0">
+                                    <?php foreach ($errors as $error): ?>
+                                        <li><?php echo htmlspecialchars($error); ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
 
-1. El Controlador de Plantillas (PlantillaController.php)
-Este controlador maneja la validación del archivo, lo mueve a la carpeta permanente y actualiza la base de datos.
+                        <form action="index.php?controller=plantilla&action=crear" method="POST" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">
+                                    <i class="bi bi-tag"></i> Nombre de la Plantilla *
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="nombre" 
+                                       name="nombre" 
+                                       placeholder="Ej: Certificado Laboral Estándar"
+                                       value="<?php echo htmlspecialchars($_POST['nombre'] ?? ''); ?>"
+                                       required>
+                                <div class="form-text">Nombre descriptivo para identificar esta plantilla.</div>
+                            </div>
 
-PHP
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label">
+                                    <i class="bi bi-card-text"></i> Descripción
+                                </label>
+                                <textarea class="form-control" 
+                                          id="descripcion" 
+                                          name="descripcion" 
+                                          rows="3"
+                                          placeholder="Descripción opcional de la plantilla..."><?php echo htmlspecialchars($_POST['descripcion'] ?? ''); ?></textarea>
+                            </div>
 
-<?php
+                            <div class="mb-3">
+                                <label for="archivo" class="form-label">
+                                    <i class="bi bi-file-earmark-arrow-up"></i> Archivo Word (.docx) *
+                                </label>
+                                <input type="file" 
+                                       class="form-control" 
+                                       id="archivo" 
+                                       name="archivo" 
+                                       accept=".doc,.docx"
+                                       required>
+                                <div class="form-text">
+                                    Selecciona un archivo Word (.doc o .docx) con las variables del certificado.
+                                </div>
+                            </div>
 
-namespace App\Controllers;
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" 
+                                       class="form-check-input" 
+                                       id="activa" 
+                                       name="activa"
+                                       <?php echo (isset($_POST['activa']) && $_POST['activa']) ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="activa">
+                                    <i class="bi bi-check-circle"></i> Activar esta plantilla automáticamente
+                                </label>
+                                <div class="form-text">
+                                    Al activar, esta plantilla se usará por defecto para generar certificados.
+                                    Las demás se desactivarán automáticamente.
+                                </div>
+                            </div>
 
-use App\Models\PlantillaWord;
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> 
+                                <strong>Variables disponibles:</strong>
+                                <div class="mt-2">
+                                    <code>${'{'}nombre}</code>, 
+                                    <code>${'{'}cedula}</code>, 
+                                    <code>${'{'}cargo}</code>, 
+                                    <code>${'{'}tipo_contrato}</code>, 
+                                    <code>${'{'}fecha_ingreso}</code>, 
+                                    <code>${'{'}salario_numero}</code>, 
+                                    <code>${'{'}salario_letras}</code>, 
+                                    <code>${'{'}empresa_nombre}</code>, 
+                                    <code>${'{'}empresa_nit}</code>, 
+                                    <code>${'{'}ciudad}</code>, 
+                                    <code>${'{'}dia}</code>, 
+                                    <code>${'{'}dia_letras}</code>, 
+                                    <code>${'{'}mes}</code>, 
+                                    <code>${'{'}anio}</code>
+                                </div>
+                            </div>
 
-class PlantillaController
-{
-    public function crear()
-    {
-        $errors = [];
+                            <div class="d-flex justify-content-between">
+                                <a href="index.php?controller=plantilla&action=index" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Volver
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save"></i> Guardar Plantilla
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nombre = $_POST['nombre'] ?? '';
-            $descripcion = $_POST['descripcion'] ?? '';
-            $activa = isset($_POST['activa']) ? 1 : 0;
-            $archivo = $_FILES['archivo'] ?? null;
+                <div class="mt-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title"><i class="bi bi-lightbulb"></i> Instrucciones</h6>
+                            <ol class="mb-0">
+                                <li>Crea tu plantilla en Microsoft Word usando las variables listadas arriba</li>
+                                <li>Las variables deben escribirse exactamente como se muestran: <code>${'{'}variable}</code></li>
+                                <li>Guarda el archivo como .docx (no .doc antiguo)</li>
+                                <li>Sube el archivo usando este formulario</li>
+                                <li>Si marcas "Activar", esta plantilla se usará automáticamente</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            // 1. Validaciones básicas
-            if (empty($nombre)) $errors[] = "El nombre es obligatorio.";
-            
-            if (!$archivo || $archivo['error'] !== UPLOAD_ERR_OK) {
-                $errors[] = "Debe subir un archivo Word válido.";
-            } else {
-                // 2. Validar extensión
-                $ext = pathinfo($archivo['name'], PATHINFO_EXTENSION);
-                if (!in_array(strtolower($ext), ['doc', 'docx'])) {
-                    $errors[] = "Solo se permiten archivos .doc o .docx";
-                }
-            }
-
-            if (empty($errors)) {
-                // 3. Preparar nombre de archivo único
-                $nombreArchivo = time() . '_' . basename($archivo['name']);
-                $rutaDestino = __DIR__ . '/../../public/plantillas/' . $nombreArchivo;
-
-                // Crear carpeta si no existe
-                if (!is_dir(dirname($rutaDestino))) {
-                    mkdir(dirname($rutaDestino), 0777, true);
-                }
-
-                // 4. Mover archivo y guardar en BD
-                if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
-                    PlantillaWord::create([
-                        'nombre' => $nombre,
-                        'descripcion' => $descripcion,
-                        'archivo' => $nombreArchivo,
-                        'activa' => $activa
-                    ]);
-
-                    header('Location: index.php?c=plantilla&a=index&success=1');
-                    exit;
-                } else {
-                    $errors[] = "Error al mover el archivo al servidor.";
-                }
-            }
-        }
-
-        // Carga la vista que me proporcionaste
-        require __DIR__ . '/../Views/plantillas/crear.php';
-    }
-}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
