@@ -43,7 +43,7 @@
                     <p class="text-muted text-center mb-4">Ingrese los datos del colaborador para buscar en la base de datos.</p>
 
                     <form action="index.php" method="get">
-                        <input type="hidden" name="controller" value="empleado">
+                        <input type="hidden" name="controller" value="certificado">
                         <input type="hidden" name="action" value="buscar">
                         
                         <div class="form-group mb-3">

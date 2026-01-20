@@ -1,9 +1,3 @@
-He modificado tu controlador CertificadoController para que se sincronice perfectamente con la estructura de base de datos que creamos (usando id_empleados, numero_documento, etc.).
-
-También he añadido una lógica para que el nombre del archivo descargado sea más limpio y profesional.
-
-PHP
-
 <?php
 
 namespace App\Controllers;
@@ -17,64 +11,87 @@ class CertificadoController
 {
     public function index()
     {
-        // Solo administradores o usuarios logueados deberían ver esto
-        if (empty($_SESSION['user_id'])) {
-            header('Location: index.php?controller=auth&action=showLogin');
-            exit;
-        }
+        // Mostrar vista principal de búsqueda
         require __DIR__ . '/../views/home.php';
     }
 
-    public function search()
+    public function buscar()
     {
         $q = trim($_GET['q'] ?? '');
         $results = [];
+        
         if ($q !== '') {
-            // Buscamos usando el nuevo método que debe apuntar a numero_documento o nombre_completo
-            $results = Empleado::findByNameOrId($q);
+            $results = $this->buscarEmpleados($q);
         }
+        
         require __DIR__ . '/../views/certificados/list.php';
+    }
+
+    private function buscarEmpleados($query)
+    {
+        $db = \App\Core\Database::getInstance();
+        $conn = $db->getConnection();
+        
+        // Buscar por nombre, documento o ID
+        $stmt = $conn->prepare("
+            SELECT * FROM empleados 
+            WHERE numero_documento LIKE :query 
+            OR nombre_completo LIKE :query 
+            OR id_empleados = :id
+            ORDER BY nombre_completo ASC
+        ");
+        
+        $searchParam = "%{$query}%";
+        $idParam = is_numeric($query) ? intval($query) : 0;
+        
+        $stmt->bindParam(':query', $searchParam, \PDO::PARAM_STR);
+        $stmt->bindParam(':id', $idParam, \PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function generar()
     {
-        // Usamos id_empleados que es tu PK
-        $id = $_GET['id'] ?? null;
+        $id = $_GET['id'] ?? $_POST['id'] ?? null;
+        
         if (!$id) {
+            $_SESSION['error'] = 'ID de empleado no válido';
             header('Location: index.php');
             exit;
         }
 
         $empleado = Empleado::findById($id);
+        
         if (!$empleado) {
-            echo "Empleado no encontrado.";
-            return;
+            $_SESSION['error'] = 'Empleado no encontrado';
+            header('Location: index.php');
+            exit;
         }
 
-        $incluirSalario = isset($_GET['incluir_salario']) && $_GET['incluir_salario'] == '1';
+        $incluirSalario = isset($_GET['incluir_salario']) || isset($_POST['incluir_salario']);
         $plantillaActiva = PlantillaWord::getActiva();
         
         if ($plantillaActiva) {
-            $this->generarWord($empleado, $incluirSalario, $plantillaActiva);
+            $this->generarWord($empleado, $incluirSalario);
         } else {
             $this->generarPdf($empleado, $incluirSalario);
         }
     }
 
-    private function generarWord($empleado, $incluirSalario = false, $plantilla = null)
+    private function generarWord($empleado, $incluirSalario = false)
     {
         try {
             $wordGen = new WordGenerator();
-            // Asegúrate de que WordGenerator use $empleado->nombre_completo y $empleado->numero_documento
-            $wordGen->generarCertificado($empleado, $incluirSalario);
+            $wordGen->generarCertificado((object)$empleado, $incluirSalario);
             
-            // Nombre del archivo basado en numero_documento
-            $nombreArchivo = 'Certificado_Laboral_' . $empleado->numero_documento;
+            $nombreArchivo = 'Certificado_' . preg_replace('/[^a-zA-Z0-9]/', '_', $empleado['nombre_completo']);
             $wordGen->descargar($nombreArchivo);
             
         } catch (\Exception $e) {
-            echo "Error al generar el certificado Word: " . htmlspecialchars($e->getMessage());
-            echo "<br><a href='index.php'>Volver</a>";
+            $_SESSION['error'] = 'Error al generar certificado Word: ' . $e->getMessage();
+            header('Location: index.php');
+            exit;
         }
     }
     
@@ -82,18 +99,15 @@ class CertificadoController
     {
         try {
             $pdfGen = new PdfGenerator();
-            // El generador de PDF ahora recibirá el objeto con los campos corregidos
-            $pdfGen->generarCertificado($empleado, $incluirSalario);
+            $pdfGen->generarCertificado((object)$empleado, $incluirSalario);
             
-            $nombreArchivo = 'Certificado_Laboral_' . $empleado->numero_documento . '.pdf';
+            $nombreArchivo = 'Certificado_' . preg_replace('/[^a-zA-Z0-9]/', '_', $empleado['nombre_completo']) . '.pdf';
             $pdfGen->descargar($nombreArchivo);
             
         } catch (\Exception $e) {
-            echo "Error al generar el certificado PDF: " . htmlspecialchars($e->getMessage());
-            echo "<br><a href='index.php'>Volver</a>";
+            $_SESSION['error'] = 'Error al generar certificado PDF: ' . $e->getMessage();
+            header('Location: index.php');
+            exit;
         }
     }
-
-    // El método descargarPlantillaDoc se mantiene igual, 
-    // pero asegúrate de usar $empleado->numero_documento
 }
