@@ -1,12 +1,12 @@
 -- Script completo para crear/actualizar la base de datos con soporte de empresas
 -- Ejecutar como usuario root
 
-CREATE DATABASE IF NOT EXISTS certificados CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE certificados;
+CREATE DATABASE IF NOT EXISTS `certificados vinus` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `certificados vinus`;
 
 -- Crear usuario y conceder permisos
 CREATE USER IF NOT EXISTS 'cert_user'@'localhost' IDENTIFIED BY 's9P@x7Kz!4BqR2vWm6Ld';
-GRANT ALL PRIVILEGES ON certificados.* TO 'cert_user'@'localhost';
+GRANT ALL PRIVILEGES ON `certificados vinus`.* TO 'cert_user'@'localhost';
 FLUSH PRIVILEGES;
 
 -- Tabla empresas
