@@ -11,7 +11,6 @@ class CertificadoController
 {
     public function index()
     {
-        // Mostrar vista principal de búsqueda
         require __DIR__ . '/../views/home.php';
     }
 
@@ -32,7 +31,6 @@ class CertificadoController
         $db = \App\Core\Database::getInstance();
         $conn = $db->getConnection();
         
-        // Buscar por nombre, documento o ID
         $stmt = $conn->prepare("
             SELECT * FROM empleados 
             WHERE numero_documento LIKE :query 

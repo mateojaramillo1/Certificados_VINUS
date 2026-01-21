@@ -13,7 +13,6 @@ class Empleado
         
         $documento = trim($documento);
         
-        // Buscamos por numero_documento
         $stmt = $conn->prepare("SELECT * FROM empleados WHERE numero_documento = :documento LIMIT 1");
         $stmt->bindParam(':documento', $documento, PDO::PARAM_STR);
         $stmt->execute();
@@ -24,7 +23,6 @@ class Empleado
             return false;
         }
         
-        // Validación: comparamos contra numero_documento (texto plano)
         if (trim($password) === trim($user['numero_documento'])) {
             return $user;
         }

@@ -9,18 +9,15 @@ class AuthController
 {
     public function showLogin()
     {
-    require __DIR__ . '/../views/auth/login.php';
-    
-
+        require __DIR__ . '/../views/auth/login.php';
     }
 
     public function login()
     {
-        // Usando 'numero_documento' que coincide con el formulario y la DB
         $documento = trim($_POST['numero_documento'] ?? ''); 
         $password = $_POST['password'] ?? '';
 
-        if ($documento === '' || $documento === '') {
+        if ($documento === '' || $password === '') {
             $error = 'Documento y contraseña son requeridos.';
             require __DIR__ . '/../views/auth/login.php';
             return;
@@ -32,16 +29,13 @@ class AuthController
             return;
         }
 
-        // El modelo ahora debe buscar por numero_documento
-        $user = Empleado::authenticate($documento, $documento);
+        $user = Empleado::authenticate($documento, $password);
 
         if (!$user) {
             $error = 'Credenciales inválidas.';
             require __DIR__ . '/../views/auth/login.php';
             return;
         }
-
-        // Login exitoso - $user es un array, no un objeto
         session_regenerate_id(true);
         $_SESSION['user_id'] = $user['id_empleados'];
         $_SESSION['user_name'] = $user['nombre_completo'];
@@ -53,21 +47,19 @@ class AuthController
 
     public function showRegister()
     {
-        // Obtener todas las empresas para el select
         $empresas = Empresa::getAll();
         require __DIR__ . '/../views/auth/register.php';
     }
 
     public function register()
     {
-        // Mapeo de datos según tu nueva tabla 'empleados'
         $nombre = trim($_POST['nombre_completo'] ?? '');
         $documento = trim($_POST['numero_documento'] ?? '');
         $cargo = trim($_POST['cargo'] ?? '');
         $tipo_contrato = trim($_POST['tipo_contrato'] ?? 'Término Indefinido');
         $salario = trim($_POST['salario_basico'] ?? 0);
         $fecha_ingreso = trim($_POST['fecha_ingreso'] ?? date('Y-m-d'));
-        $id_empresa = $_POST['id_empresa'] ?? 1; // Por defecto la primera empresa
+        $id_empresa = $_POST['id_empresa'] ?? 1;
 
         if ($nombre === '' || $documento === '') {
             $error = 'Nombre y documento son obligatorios.';
@@ -81,7 +73,6 @@ class AuthController
             return;
         }
 
-        // Crear registro con la estructura exacta de tu base de datos
         $user = Empleado::create([
             'id_empresa'        => $id_empresa,
             'numero_documento'  => $documento,
@@ -91,7 +82,7 @@ class AuthController
             'salario_basico'    => $salario,
             'fecha_ingreso'     => $fecha_ingreso,
             'estado'            => 'Activo',
-            'is_admin'          => 0 // Por defecto no es admin al registrarse solo
+            'is_admin'          => 0
         ]);
 
         if ($user) {
@@ -108,7 +99,6 @@ class AuthController
 
     public function dashboard()
     {
-        // Verificar que haya sesión activa
         if (!isset($_SESSION['user_id'])) {
             header('Location: index.php?controller=auth&action=showLogin');
             exit;
@@ -119,7 +109,6 @@ class AuthController
 
     public function logout()
     {
-        // Limpiar sesión completamente
         $_SESSION = array();
         
         if (ini_get("session.use_cookies")) {

@@ -12,7 +12,6 @@ class PdfGenerator
 
     public function __construct()
     {
-        // Configuramos el PDF
         $this->pdf = new \FPDF('P', 'mm', 'Letter'); // Tamaño carta
         $this->pdf->AddPage();
         $this->pdf->SetMargins(25, 25, 25); // Márgenes más amplios para formalidad
@@ -21,31 +20,26 @@ class PdfGenerator
 
     public function generarCertificado($empleado, $incluirSalario = false)
     {
-        // Obtener info de la empresa desde el archivo de configuración
         $company = require __DIR__ . '/../config/company.php';
 
-        // Preparar fechas
         $dia = date('j');
         $diaLetras = NumeroALetras::convertirDia($dia);
         $meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
         $mes = $meses[(int)date('n')-1];
         $anio = date('Y');
         
-        // Ajuste de nombres según tu tabla 'empleados'
         $nombre = mb_strtoupper($empleado->nombre_completo, 'UTF-8');
         $documento = $empleado->numero_documento;
         $cargo = $empleado->cargo;
         $tipoContrato = $empleado->tipo_contrato;
         $fechaIngreso = date('d/m/Y', strtotime($empleado->fecha_ingreso));
 
-        // 1. Logo
         $logoPath = __DIR__ . '/../../public/images/logo.png';
         if (file_exists($logoPath)) {
             $this->pdf->Image($logoPath, 25, 15, 40);
         }
         $this->pdf->Ln(25);
 
-        // 2. Título Central
         $this->pdf->SetFont('Arial', 'B', 14);
         $this->pdf->Cell(0, 10, utf8_decode('EL SUSCRITO REPRESENTANTE LEGAL DE'), 0, 1, 'C');
         $this->pdf->SetFont('Arial', 'B', 16);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core; // Esto debe coincidir exactamente con el nombre de las carpetas
+namespace App\Core;
 
 use PDO;
 use PDOException;
@@ -10,11 +10,7 @@ class Database {
     private $connection;
 
     private function __construct() {
-        // Carga el archivo de configuración que ya tienes
-      $config = require __DIR__ . '/../config/database.php';
-      
-
-
+        $config = require __DIR__ . '/../config/database.php';
 
         $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset=utf8mb4";
         
@@ -39,4 +35,3 @@ class Database {
         return $this->connection;
     }
 }
-

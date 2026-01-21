@@ -8,7 +8,6 @@ class PlantillaController
 {
     private function checkAdmin()
     {
-        // Centralizamos la validación de administrador
         if (!isset($_SESSION['user_id']) || empty($_SESSION['is_admin'])) {
             $_SESSION['error'] = 'No tiene permisos para acceder a esta sección';
             header('Location: index.php?controller=auth&action=dashboard');
@@ -37,7 +36,6 @@ class PlantillaController
                 $errors[] = 'El nombre de la plantilla es requerido';
             }
 
-            // Validación de archivo
             if (empty($_FILES['archivo']['name'])) {
                 $errors[] = 'Debe seleccionar un archivo Word';
             } else {
@@ -54,22 +52,19 @@ class PlantillaController
                 $nombreArchivo = $nombreBase . '.' . $extension;
                 $rutaDestino = __DIR__ . '/../../public/plantillas/' . $nombreArchivo;
 
-                // Asegurar que la carpeta existe
                 if (!is_dir(dirname($rutaDestino))) {
                     mkdir(dirname($rutaDestino), 0777, true);
                 }
 
                 if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
-                    // Conversión automática de .doc a .docx
                     if ($extension === 'doc') {
                         $rutaConvertida = $this->convertirDocADocx($rutaDestino, $nombreBase);
                         if ($rutaConvertida) {
-                            unlink($rutaDestino); // Borrar .doc viejo
+                            unlink($rutaDestino);
                             $nombreArchivo = basename($rutaConvertida);
                         }
                     }
                     
-                    // Guardar en la DB
                     PlantillaWord::create([
                         'nombre' => $nombre,
                         'descripcion' => $descripcion,
@@ -116,7 +111,6 @@ class PlantillaController
             exit;
         }
 
-        // Verificar que no sea la única plantilla activa
         $plantilla = PlantillaWord::findById($id);
         
         if (!$plantilla) {
