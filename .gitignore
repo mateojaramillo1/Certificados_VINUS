@@ -5,11 +5,7 @@
 .env
 .env.local
 
-# Archivos de configuración con credenciales sensibles
-# (Descomenta si tienes archivos específicos)
-# app/config/database.php
-
-# Archivos generados
+# Archivos generados - Plantillas subidas
 public/plantillas/*.docx
 public/plantillas/*.pdf
 
@@ -30,3 +26,10 @@ error_log
 
 # Archivos de cache
 *.cache
+
+# Composer binario
+composer.phar
+
+# Archivos de prueba
+test.php
+prueba.php
