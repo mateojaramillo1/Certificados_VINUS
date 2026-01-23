@@ -67,7 +67,8 @@ class CertificadoController
             exit;
         }
 
-        $incluirSalario = isset($_GET['incluir_salario']) || isset($_POST['incluir_salario']);
+        $valorIncluir = $_GET['incluir_salario'] ?? $_POST['incluir_salario'] ?? null;
+        $incluirSalario = filter_var($valorIncluir, FILTER_VALIDATE_BOOLEAN);
 
         $plantillaActiva = PlantillaWord::getActiva();
         

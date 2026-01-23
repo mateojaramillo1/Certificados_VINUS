@@ -69,7 +69,10 @@ class WordGenerator
         if ($incluirSalario && !empty($empleado->salario_basico)) {
             $salarioFormateado = number_format($empleado->salario_basico, 0, ',', '.');
             $salarioLetras = NumeroALetras::convertir($empleado->salario_basico);
-            $salarioTexto = mb_strtoupper($salarioLetras, 'UTF-8') . ' PESOS';
+            $salarioTexto = mb_strtoupper($salarioLetras, 'UTF-8');
+            if (mb_stripos($salarioTexto, 'PESOS') === false) {
+                $salarioTexto .= ' PESOS';
+            }
 
             $this->templateProcessor->setValue('salario', '$' . $salarioFormateado);
             $this->templateProcessor->setValue('salario_letras', $salarioTexto);
@@ -140,7 +143,7 @@ class WordGenerator
             return;
         }
 
-        $patron = '/,?\s*con una asignación salarial básica mensual de\s*\$?\s*[^<]*?y todas las prestaciones de Ley\s*/iu';
+        $patron = '/con(?:\s|<[^>]+>)+una(?:\s|<[^>]+>)+asignación(?:\s|<[^>]+>)+salarial(?:\s|<[^>]+>)+básica(?:\s|<[^>]+>)+mensual(?:\s|<[^>]+>)+de(?:\s|<[^>]+>)+[\s\S]*?prestaciones(?:\s|<[^>]+>)+de(?:\s|<[^>]+>)+Ley/iu';
         $xml = preg_replace($patron, '', $xml);
 
         $xml = str_replace('  ', ' ', $xml);

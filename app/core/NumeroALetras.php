@@ -16,6 +16,7 @@ class NumeroALetras
         }
 
         $numero = intval($numero);
+        $numeroOriginal = $numero;
         
         if ($numero < 0) {
             return 'número negativo';
@@ -76,7 +77,12 @@ class NumeroALetras
         if ($resultado == 'un') {
             $resultado .= ' peso';
         } else {
-            $resultado .= ' pesos';
+            // Para millones exactos: "CINCO MILLONES DE PESOS"
+            if ($numeroOriginal >= 1000000 && ($numeroOriginal % 1000000) === 0) {
+                $resultado .= ' de pesos';
+            } else {
+                $resultado .= ' pesos';
+            }
         }
 
         return $resultado;
