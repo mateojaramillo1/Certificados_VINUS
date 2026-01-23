@@ -176,7 +176,7 @@ $empresa = require __DIR__ . '/../../config/company.php';
                     <div class="text-center mt-3">
                         <small class="text-muted">
                             <i class="bi bi-info-circle"></i> 
-                            El certificado se descargará en formato Word (.docx)
+                            El certificado se descargará en formato PDF
                         </small>
                     </div>
                 </div>
