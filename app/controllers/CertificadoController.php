@@ -26,6 +26,32 @@ class CertificadoController
         require __DIR__ . '/../views/certificados/list.php';
     }
 
+    public function verCertificado()
+    {
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) {
+            $_SESSION['error'] = 'ID de empleado no válido';
+            header('Location: index.php');
+            exit;
+        }
+
+        $empleado = Empleado::findById($id);
+
+        if (!$empleado) {
+            $_SESSION['error'] = 'Empleado no encontrado';
+            header('Location: index.php');
+            exit;
+        }
+
+        $empleado = (object)$empleado;
+
+        $valorIncluir = $_GET['incluir_salario'] ?? null;
+        $incluirSalario = filter_var($valorIncluir, FILTER_VALIDATE_BOOLEAN);
+
+        require __DIR__ . '/../views/certificados/certificado.php';
+    }
+
     private function buscarEmpleados($query)
     {
         $db = \App\Core\Database::getInstance();

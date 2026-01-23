@@ -1,4 +1,4 @@
-<<!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
@@ -46,22 +46,22 @@
                     <tbody>
                     <?php foreach ($results as $r): ?>
                         <tr>
-                            <td><strong><?php echo htmlspecialchars($r->nombre); ?></strong></td>
-                            <td><?php echo htmlspecialchars($r->cedula); ?></td>
-                            <td><?php echo htmlspecialchars($r->cargo); ?></td>
+                            <td><strong><?php echo htmlspecialchars($r['nombre_completo']); ?></strong></td>
+                            <td><?php echo htmlspecialchars($r['numero_documento']); ?></td>
+                            <td><?php echo htmlspecialchars($r['cargo']); ?></td>
                             <td>
                                 <div class="d-flex justify-content-center gap-2">
-                                    <a href="index.php?controller=certificado&action=verCertificado&id=<?php echo $r->id; ?>&incluir_salario=1" 
+                                    <a href="index.php?controller=certificado&action=verCertificado&id=<?php echo $r['id_empleados']; ?>&incluir_salario=1" 
                                        class="btn btn-sm btn-outline-primary" title="Vista para imprimir">
                                        Ver PDF
                                     </a>
 
-                                    <a href="index.php?controller=certificado&action=generar&id=<?php echo $r->id; ?>&incluir_salario=0" 
+                                    <a href="index.php?controller=certificado&action=generar&id=<?php echo $r['id_empleados']; ?>&incluir_salario=0" 
                                        class="btn btn-sm btn-primary">
                                        Word
                                     </a>
 
-                                    <a href="index.php?controller=certificado&action=generar&id=<?php echo $r->id; ?>&incluir_salario=1" 
+                                    <a href="index.php?controller=certificado&action=generar&id=<?php echo $r['id_empleados']; ?>&incluir_salario=1" 
                                        class="btn btn-sm btn-success">
                                        Word + Salario
                                     </a>

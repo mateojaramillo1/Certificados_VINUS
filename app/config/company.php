@@ -4,7 +4,12 @@ $fallback = [
     'name' => 'VINUS S.A.S',
     'nit'  => '900.000.000-1',
     'city' => 'Medellín',
-    'representative' => 'Representante Legal'
+    'address' => 'Dirección no registrada',
+    'email' => 'info@vinus.com.co',
+    'phone' => '0000000',
+    'representative' => 'Representante Legal',
+    'responsible_name' => 'Representante Legal',
+    'responsible_title' => 'Representante Legal'
 ];
 
 try {
@@ -22,7 +27,12 @@ try {
         'name' => $companyData['nombre_empresa'] ?? $fallback['name'],
         'nit'  => $companyData['nit'] ?? $fallback['nit'],
         'city' => $companyData['ciudad'] ?? $fallback['city'],
-        'representative' => $companyData['representante_legal'] ?? $fallback['representative']
+        'address' => $companyData['direccion'] ?? $fallback['address'],
+        'email' => $companyData['email'] ?? $fallback['email'],
+        'phone' => $companyData['telefono'] ?? $fallback['phone'],
+        'representative' => $companyData['representante_legal'] ?? $fallback['representative'],
+        'responsible_name' => $companyData['representante_legal'] ?? $fallback['responsible_name'],
+        'responsible_title' => $fallback['responsible_title']
     ];
 } catch (\Exception $e) {
     error_log('Company config DB error: ' . $e->getMessage());

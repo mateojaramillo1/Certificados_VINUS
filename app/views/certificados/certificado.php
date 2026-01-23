@@ -23,7 +23,7 @@ $fechaRetiroTexto = ($empleado->fecha_retiro) ? date('d/m/Y', strtotime($emplead
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>Certificado - <?php echo htmlspecialchars($empleado->nombre); ?></title>
+    <title>Certificado - <?php echo htmlspecialchars($empleado->nombre_completo); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
     <style>
@@ -64,15 +64,15 @@ $fechaRetiroTexto = ($empleado->fecha_retiro) ? date('d/m/Y', strtotime($emplead
             <p>La empresa <strong><?php echo htmlspecialchars($company['name']); ?></strong>, identificada con NIT <strong><?php echo htmlspecialchars($company['nit']); ?></strong>, certifica que:</p>
 
             <p class="text-justify">
-                El(La) señor(a) <strong><?php echo htmlspecialchars($empleado->nombre); ?></strong>, 
-                identificado(a) con cédula de ciudadanía No. <strong><?php echo htmlspecialchars($empleado->cedula); ?></strong>, 
+                El(La) señor(a) <strong><?php echo htmlspecialchars($empleado->nombre_completo); ?></strong>, 
+                identificado(a) con cédula de ciudadanía No. <strong><?php echo htmlspecialchars($empleado->numero_documento); ?></strong>, 
                 labora (o laboró) en esta organización desde el <strong><?php echo $fechaIngresoFormateada; ?></strong> 
                 hasta <strong><?php echo $fechaRetiroTexto; ?></strong>, desempeñando el cargo de 
                 <strong><?php echo htmlspecialchars($empleado->cargo); ?></strong>, mediante un contrato de trabajo 
                 <strong><?php echo htmlspecialchars($empleado->tipo_contrato); ?></strong><?php 
-                if (isset($incluirSalario) && $incluirSalario && !empty($empleado->salario)): ?>, 
-                devengando un salario mensual de <strong><?php echo '$' . number_format($empleado->salario, 0, ',', '.'); ?></strong> 
-                (<?php echo mb_strtoupper(NumeroALetras::convertir($empleado->salario)); ?> PESOS)<?php endif; ?>.
+                if (isset($incluirSalario) && $incluirSalario && !empty($empleado->salario_basico)): ?>, 
+                devengando un salario mensual de <strong><?php echo '$' . number_format($empleado->salario_basico, 0, ',', '.'); ?></strong> 
+                (<?php echo mb_strtoupper(NumeroALetras::convertir($empleado->salario_basico)); ?>)<?php endif; ?>.
             </p>
 
             <p>Durante su vinculación, el(la) trabajador(a) ha demostrado cumplimiento en sus funciones y compromiso con las políticas de la organización.</p>
@@ -99,7 +99,7 @@ $fechaRetiroTexto = ($empleado->fecha_retiro) ? date('d/m/Y', strtotime($emplead
 
             <div class="no-print mt-5 pt-4 border-top">
                 <button onclick="window.print()" class="btn btn-primary">Imprimir / Guardar PDF</button>
-                <a class="btn btn-outline-secondary" href="index.php?controller=home&action=index">Volver al Dashboard</a>
+                <a class="btn btn-outline-secondary" href="index.php?controller=auth&action=dashboard">Volver al Dashboard</a>
             </div>
         </div>
     </div>
