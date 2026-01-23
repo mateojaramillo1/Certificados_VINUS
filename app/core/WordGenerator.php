@@ -11,6 +11,7 @@ class WordGenerator
 {
     private $plantilla;
     private $templateProcessor;
+    private $incluirSalario = true;
 
     public function __construct()
     {
@@ -22,7 +23,17 @@ class WordGenerator
 
     public function generarCertificado($empleado, $incluirSalario = true)
     {
-        $rutaPlantilla = $this->plantilla->getRutaCompleta();
+        $this->incluirSalario = (bool)$incluirSalario;
+        $rutaPlantilla = null;
+        if (is_array($this->plantilla)) {
+            $rutaPlantilla = PlantillaWord::getRutaCompleta($this->plantilla);
+        } elseif (is_object($this->plantilla) && method_exists($this->plantilla, 'getRutaCompleta')) {
+            $rutaPlantilla = $this->plantilla->getRutaCompleta();
+        }
+        
+        if (!$rutaPlantilla) {
+            throw new \Exception('No se pudo resolver la ruta de la plantilla activa.');
+        }
         
         if (!file_exists($rutaPlantilla)) {
             throw new \Exception('El archivo físico de la plantilla no existe en el servidor.');
@@ -54,15 +65,22 @@ class WordGenerator
         $this->templateProcessor->setValue('mes_ingreso', $mesIngreso);
         $this->templateProcessor->setValue('anio_ingreso', $anioIngreso);
 
+        $clausulaSalario = '';
         if ($incluirSalario && !empty($empleado->salario_basico)) {
             $salarioFormateado = number_format($empleado->salario_basico, 0, ',', '.');
             $salarioLetras = NumeroALetras::convertir($empleado->salario_basico);
+            $salarioTexto = mb_strtoupper($salarioLetras, 'UTF-8') . ' PESOS';
+
             $this->templateProcessor->setValue('salario', '$' . $salarioFormateado);
-            $this->templateProcessor->setValue('salario_letras', mb_strtoupper($salarioLetras, 'UTF-8') . ' PESOS M/CTE');
+            $this->templateProcessor->setValue('salario_letras', $salarioTexto);
+
+            $clausulaSalario = ", con una asignación salarial básica mensual de " . $salarioTexto . " ($" . $salarioFormateado . ") y todas las prestaciones de Ley";
         } else {
             $this->templateProcessor->setValue('salario', '');
             $this->templateProcessor->setValue('salario_letras', '');
         }
+
+        $this->templateProcessor->setValue('clausula_salario', $clausulaSalario);
 
         $this->templateProcessor->setValue('empresa_nombre', $company['name']);
         $this->templateProcessor->setValue('empresa_nit', $company['nit']);
@@ -80,6 +98,10 @@ class WordGenerator
     {
         $tempWordFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $nombreArchivo . '_' . time() . '.docx';
         $this->templateProcessor->saveAs($tempWordFile);
+
+        if (!$this->incluirSalario) {
+            $this->removerClausulaSalario($tempWordFile);
+        }
 
         // Intentar convertir a PDF si LibreOffice está disponible
         $pdfFile = $this->convertirConLibreOffice($tempWordFile);
@@ -100,13 +122,66 @@ class WordGenerator
         exit;
     }
 
+    private function removerClausulaSalario($docxPath)
+    {
+        if (!class_exists('ZipArchive')) {
+            return;
+        }
+
+        $zip = new \ZipArchive();
+        if ($zip->open($docxPath) !== true) {
+            return;
+        }
+
+        $xmlPath = 'word/document.xml';
+        $xml = $zip->getFromName($xmlPath);
+        if ($xml === false) {
+            $zip->close();
+            return;
+        }
+
+        $patron = '/,?\s*con una asignación salarial básica mensual de\s*\$?\s*[^<]*?y todas las prestaciones de Ley\s*/iu';
+        $xml = preg_replace($patron, '', $xml);
+
+        $xml = str_replace('  ', ' ', $xml);
+        $xml = str_replace(' ,', ',', $xml);
+
+        $zip->deleteName($xmlPath);
+        $zip->addFromString($xmlPath, $xml);
+        $zip->close();
+    }
+
     private function convertirConLibreOffice($wordFile)
     {
-        $soffice = 'C:\Program Files\LibreOffice\program\soffice.exe'; // Ruta estándar en Windows
-        if (!file_exists($soffice)) return false;
+        $envPath = getenv('LIBREOFFICE_PATH') ?: ($_ENV['LIBREOFFICE_PATH'] ?? null);
+        $candidatos = array_filter([
+            $envPath,
+            'C:\\Program Files\\LibreOffice\\program\\soffice.exe',
+            'C:\\Program Files (x86)\\LibreOffice\\program\\soffice.exe',
+            'soffice'
+        ]);
+
+        $soffice = null;
+        foreach ($candidatos as $ruta) {
+            if ($ruta === 'soffice') {
+                $soffice = $ruta;
+                break;
+            }
+            if (file_exists($ruta)) {
+                $soffice = $ruta;
+                break;
+            }
+        }
+
+        if (!$soffice) return false;
 
         $outputDir = sys_get_temp_dir();
-        $cmd = "\"$soffice\" --headless --convert-to pdf --outdir \"$outputDir\" \"$wordFile\"";
+        $cmd = sprintf(
+            '"%s" --headless --convert-to pdf --outdir "%s" "%s"',
+            $soffice,
+            $outputDir,
+            $wordFile
+        );
         exec($cmd);
 
         $pdfFile = $outputDir . DIRECTORY_SEPARATOR . pathinfo($wordFile, PATHINFO_FILENAME) . '.pdf';

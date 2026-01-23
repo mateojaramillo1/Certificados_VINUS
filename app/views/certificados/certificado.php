@@ -72,7 +72,7 @@ $fechaRetiroTexto = ($empleado->fecha_retiro) ? date('d/m/Y', strtotime($emplead
                 <strong><?php echo htmlspecialchars($empleado->tipo_contrato); ?></strong><?php 
                 if (isset($incluirSalario) && $incluirSalario && !empty($empleado->salario)): ?>, 
                 devengando un salario mensual de <strong><?php echo '$' . number_format($empleado->salario, 0, ',', '.'); ?></strong> 
-                (<?php echo mb_strtoupper(NumeroALetras::convertir($empleado->salario)); ?> PESOS M/CTE)<?php endif; ?>.
+                (<?php echo mb_strtoupper(NumeroALetras::convertir($empleado->salario)); ?> PESOS)<?php endif; ?>.
             </p>
 
             <p>Durante su vinculación, el(la) trabajador(a) ha demostrado cumplimiento en sus funciones y compromiso con las políticas de la organización.</p>

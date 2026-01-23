@@ -62,7 +62,7 @@ class PdfGenerator
         if ($incluirSalario && !empty($empleado->salario_basico)) {
             $salarioNum = number_format($empleado->salario_basico, 0, ',', '.');
             $salarioLetras = NumeroALetras::convertir($empleado->salario_basico);
-            $texto .= ", devengando un salario básico mensual de " . mb_strtoupper($salarioLetras) . " ($" . $salarioNum . ")";
+            $texto .= ", con una asignación salarial básica mensual de " . mb_strtoupper($salarioLetras) . " ($" . $salarioNum . ") y todas las prestaciones de Ley";
         }
 
         $texto .= ".";

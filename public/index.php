@@ -14,6 +14,15 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Forzar codificación UTF-8 solo en respuestas HTML (evitar descargas)
+$controllerParam = $_GET['controller'] ?? $_GET['c'] ?? 'auth';
+$action = $_GET['action'] ?? $_GET['a'] ?? 'showLogin';
+
+$isDownload = ($controllerParam === 'certificado' && in_array($action, ['generar', 'verCertificado'], true));
+if (!$isDownload) {
+    header('Content-Type: text/html; charset=UTF-8');
+}
+
 // 3. AUTOLOAD PSR-4 (Conexión de clases con archivos)
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
@@ -34,8 +43,6 @@ try {
 }
 
 // 5. PROCESAMIENTO DE RUTA (Controller / Action)
-$controllerParam = $_GET['controller'] ?? $_GET['c'] ?? 'auth';
-$action = $_GET['action'] ?? $_GET['a'] ?? 'showLogin';
 
 // 6. MIDDLEWARE DE AUTENTICACIÓN (Protección de Base de Datos)
 // Lista de controladores que requieren que el usuario esté logueado

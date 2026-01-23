@@ -68,6 +68,7 @@ class CertificadoController
         }
 
         $incluirSalario = isset($_GET['incluir_salario']) || isset($_POST['incluir_salario']);
+
         $plantillaActiva = PlantillaWord::getActiva();
         
         if ($plantillaActiva) {
