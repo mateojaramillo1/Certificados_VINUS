@@ -53,10 +53,7 @@ if (in_array($controllerParam, $rutasProtegidas) && empty($_SESSION['user_id']))
     exit;
 }
 
-// Redirección si ya está logueado y va al login
-if ($controllerParam === 'auth' && $action === 'showLogin' && !empty($_SESSION['user_id'])) {
-    $action = 'dashboard';
-}
+// Siempre mostrar login al ingresar (no auto-redirigir por sesión previa)
 
 // 7. INSTANCIACIÓN DINÁMICA
 $controllerClass = 'App\\Controllers\\' . ucfirst($controllerParam) . 'Controller';
