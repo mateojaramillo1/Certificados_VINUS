@@ -148,6 +148,14 @@ class WordGenerator
 
         $xml = str_replace('  ', ' ', $xml);
         $xml = str_replace(' ,', ',', $xml);
+        $xml = str_replace(' .', '.', $xml);
+        $xml = str_replace(' ;', ';', $xml);
+        $xml = str_replace(' :', ':', $xml);
+        $xml = str_replace(' ?', '?', $xml);
+        $xml = str_replace(' !', '!', $xml);
+
+        // Eliminar espacios antes de signos de puntuación incluso si están en nodos separados
+        $xml = preg_replace('/\s+(?=(?:<[^>]+>)*[\.,;:!?])/u', '', $xml);
 
         $zip->deleteName($xmlPath);
         $zip->addFromString($xmlPath, $xml);

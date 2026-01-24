@@ -65,7 +65,7 @@ class PdfGenerator
             $texto .= ", con una asignación salarial básica mensual de " . mb_strtoupper($salarioLetras) . " ($" . $salarioNum . ") y todas las prestaciones de Ley";
         }
 
-        $texto .= ".";
+        $texto = ".";
 
         $this->pdf->MultiCell(0, 8, utf8_decode($texto), 0, 'J');
         $this->pdf->Ln(10);
