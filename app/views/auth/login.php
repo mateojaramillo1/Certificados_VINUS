@@ -76,7 +76,7 @@
             <?php endif; ?>
 
             <form action="index.php?controller=auth&action=login" method="POST">
-                <div class="mb-3">
+                <div class="mb-4">
                     <label for="numero_documento" class="form-label">Número de Documento</label>
                     <input type="text" 
                            class="form-control form-control-lg" 
@@ -85,15 +85,6 @@
                            placeholder="Ingrese su número de documento" 
                            required 
                            autofocus>
-                </div>
-                <div class="mb-4">
-                    <label for="password" class="form-label">Contraseña</label>
-                    <input type="password" 
-                           class="form-control form-control-lg" 
-                           id="password" 
-                           name="password" 
-                           placeholder="Ingrese su contraseña" 
-                           required>
                 </div>
                 <button type="submit" class="btn btn-primary btn-lg btn-login">
                     Ingresar

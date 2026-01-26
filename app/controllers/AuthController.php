@@ -33,10 +33,9 @@ class AuthController
     public function login()
     {
         $documento = trim($_POST['numero_documento'] ?? ''); 
-        $password = $_POST['password'] ?? '';
 
-        if ($documento === '' || $password === '') {
-            $error = 'Documento y contraseña son requeridos.';
+        if ($documento === '') {
+            $error = 'El documento es requerido.';
             require __DIR__ . '/../views/auth/login.php';
             return;
         }
@@ -47,7 +46,7 @@ class AuthController
             return;
         }
 
-        $user = Empleado::authenticate($documento, $password);
+        $user = Empleado::findByDocumento($documento);
 
         if (!$user) {
             $error = 'Credenciales inválidas.';
