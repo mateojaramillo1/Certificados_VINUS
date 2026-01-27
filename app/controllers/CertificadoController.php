@@ -32,7 +32,7 @@ class CertificadoController
 
         if (!$id) {
             $_SESSION['error'] = 'ID de empleado no válido';
-            header('Location: index.php');
+            header('Location: index.php?controller=auth&action=dashboard');
             exit;
         }
 
@@ -40,7 +40,7 @@ class CertificadoController
 
         if (!$empleado) {
             $_SESSION['error'] = 'Empleado no encontrado';
-            header('Location: index.php');
+            header('Location: index.php?controller=auth&action=dashboard');
             exit;
         }
 
@@ -116,7 +116,7 @@ class CertificadoController
             
         } catch (\Exception $e) {
             $_SESSION['error'] = 'Error al generar certificado Word: ' . $e->getMessage();
-            header('Location: index.php');
+            header('Location: index.php?controller=auth&action=dashboard');
             exit;
         }
     }
@@ -132,7 +132,7 @@ class CertificadoController
             
         } catch (\Exception $e) {
             $_SESSION['error'] = 'Error al generar certificado PDF: ' . $e->getMessage();
-            header('Location: index.php');
+            header('Location: index.php?controller=auth&action=dashboard');
             exit;
         }
     }

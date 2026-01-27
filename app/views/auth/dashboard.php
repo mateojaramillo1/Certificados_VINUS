@@ -93,6 +93,14 @@ $empresa = require __DIR__ . '/../../config/company.php';
     </nav>
 
     <div class="container">
+        <?php if (!empty($_SESSION['error'])): ?>
+            <div class="alert alert-danger mt-4">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <?php echo htmlspecialchars($_SESSION['error']); ?>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <!-- Información del Empleado -->

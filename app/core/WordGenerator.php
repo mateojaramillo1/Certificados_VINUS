@@ -39,6 +39,10 @@ class WordGenerator
             throw new \Exception('El archivo físico de la plantilla no existe en el servidor.');
         }
 
+        if (!class_exists('ZipArchive')) {
+            throw new \Exception('La extensión ZIP de PHP no está habilitada en el servidor. Activa extension=zip en php.ini y reinicia Apache.');
+        }
+
         try {
             $this->templateProcessor = new TemplateProcessor($rutaPlantilla);
         } catch (\Exception $e) {
