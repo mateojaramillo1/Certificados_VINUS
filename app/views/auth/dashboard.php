@@ -35,7 +35,7 @@ $empresa = require __DIR__ . '/../../config/company.php';
             <div class="d-flex align-items-center gap-3">
                 <?php if (!empty($_SESSION['is_admin'])): ?>
                     <div class="dropdown">
-                        <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-outline-light btn-sm dropdown-toggle admin-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-gear"></i> Administración
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -136,7 +136,7 @@ $empresa = require __DIR__ . '/../../config/company.php';
                         <i class="bi bi-file-earmark-pdf"></i> Generar Certificado Laboral
                     </h4>
                     <p class="text-muted mb-3">
-                        Seleccione las opciones para su certificado y descárguelo en formato Word.
+                        Seleccione las opciones para su certificado y descárguelo en formato PDF.
                     </p>
 
                     <form action="index.php" method="GET">

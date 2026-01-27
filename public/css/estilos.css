@@ -158,6 +158,26 @@ a:hover{color:var(--vinus-blue-dark)}
 }
 .btn-outline-vinus:active{transform:translateY(0);box-shadow:0 6px 12px rgba(30,78,216,.12)}
 
+.admin-btn{
+	background:var(--vinus-white);
+	border-color:var(--vinus-white);
+	color:#111;
+}
+.admin-btn:hover{
+	background:#f1f5ff;
+	border-color:#f1f5ff;
+	color:#111;
+}
+.admin-btn:focus{
+	box-shadow:0 0 0 .2rem rgba(255,255,255,.35);
+}
+.admin-btn:active,
+.admin-btn.show{
+	background:var(--vinus-orange);
+	border-color:var(--vinus-orange);
+	color:var(--vinus-white);
+}
+
 .auth-page{
 	background:
 		radial-gradient(circle at top left, rgba(30,78,216,.34), transparent 55%),
@@ -270,6 +290,11 @@ a:hover{color:var(--vinus-blue-dark)}
 	.vinus-container{padding:1.5rem 1rem}
 	.vinus-card{padding:1.5rem}
 	.auth-header{padding:1.25rem}
+	.admin-btn{
+		background:var(--vinus-white);
+		border-color:var(--vinus-white);
+		color:#111;
+	}
 }
 
 @media (max-height:820px){
