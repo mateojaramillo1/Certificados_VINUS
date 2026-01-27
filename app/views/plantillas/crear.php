@@ -10,11 +10,14 @@
 </head>
 <body class="vinus-app">
     <nav class="navbar navbar-expand-lg navbar-dark vinus-navbar">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.php?controller=auth&action=dashboard">
-                <i class="bi bi-award"></i> VINUS <span>S.A.S</span>
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a class="navbar-brand vinus-brand" href="index.php?controller=auth&action=dashboard">
+                <img src="images/logo.png" alt="VINUS" class="navbar-logo" onerror="this.src='images/logo.svg'">
             </a>
-            <div class="navbar-nav ms-auto">
+            <div class="navbar-nav ms-auto align-items-center gap-2">
+                <a href="index.php?controller=auth&action=dashboard" class="btn btn-outline-light btn-sm">
+                    Volver al Dashboard
+                </a>
                 <span class="navbar-text text-white me-3">
                     <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuario'); ?>
                 </span>
@@ -152,5 +155,17 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.vinus-navbar .navbar-brand').forEach((brand) => {
+            brand.addEventListener('mousemove', (event) => {
+                const rect = brand.getBoundingClientRect();
+                const x = ((event.clientX - rect.left) / rect.width) * 100;
+                brand.style.setProperty('--hover-x', `${Math.max(0, Math.min(100, x))}%`);
+            });
+            brand.addEventListener('mouseleave', () => {
+                brand.style.removeProperty('--hover-x');
+            });
+        });
+    </script>
 </body>
 </html>

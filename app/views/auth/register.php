@@ -7,8 +7,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
 </head>
-<body class="vinus-app auth-page">
-    <div class="vinus-card auth-card p-0" style="max-width:720px;">
+<body class="vinus-app auth-body">
+    <nav class="navbar navbar-expand-lg navbar-dark vinus-navbar">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a class="navbar-brand vinus-brand" href="index.php?controller=auth&action=dashboard">
+                <img src="images/logo.png" alt="VINUS" class="navbar-logo" onerror="this.src='images/logo.svg'">
+            </a>
+            <a href="index.php?controller=auth&action=dashboard" class="btn btn-outline-light btn-sm">
+                Volver al Dashboard
+            </a>
+        </div>
+    </nav>
+    <div class="auth-page">
+        <div class="vinus-card auth-card p-0" style="max-width:720px;">
         <div class="auth-header text-center">
             <h2>VINUS S.A.S</h2>
             <p class="mb-0">Registro de Usuario</p>
@@ -110,13 +121,6 @@
                            value="<?php echo htmlspecialchars($_POST['fecha_ingreso'] ?? date('Y-m-d')); ?>">
                 </div>
 
-                <div class="alert alert-info" role="alert">
-                    <small>
-                        <strong>Nota:</strong> Tu número de documento será usado como contraseña inicial.
-                        Podrás cambiarla después de iniciar sesión.
-                    </small>
-                </div>
-
                 <button type="submit" class="btn btn-vinus-accent btn-lg w-100">
                     Registrarse
                 </button>
@@ -130,6 +134,7 @@
                     </a>
                 </p>
             </div>
+        </div>
         </div>
     </div>
 

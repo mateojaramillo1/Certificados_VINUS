@@ -8,15 +8,20 @@
 </head>
 <body class="vinus-app">
     <nav class="navbar navbar-expand-lg navbar-dark vinus-navbar">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.php">VINUS <span>S.A.S</span></a>
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a class="navbar-brand vinus-brand" href="index.php">
+                <img src="images/logo.png" alt="VINUS" class="navbar-logo" onerror="this.src='images/logo.svg'">
+            </a>
+            <a href="index.php?controller=auth&action=dashboard" class="btn btn-outline-light btn-sm">
+                Volver al Dashboard
+            </a>
         </div>
     </nav>
 
     <div class="container vinus-container">
         <div class="d-flex align-items-center gap-3 mb-4">
             <img src="images/logo.png" alt="VINUS logo" style="height:50px;" onerror="this.src='images/logo.svg'">
-            <div class="h4 m-0">Gestión de Empleados</div>
+            <div class="h4 m-0 fw-bold text-uppercase">Gestión de Empleados</div>
         </div>
 
         <nav aria-label="breadcrumb">
@@ -26,13 +31,32 @@
             </ol>
         </nav>
 
-        <h1 class="h3 mb-4">Resultados para: "<?php echo htmlspecialchars($termino); ?>"</h1>
+        <div class="vinus-card mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-12">
+                    <label class="form-label fw-bold">Buscar por nombre, cédula o cargo</label>
+                    <input id="employeeSearch" type="search"
+                           class="form-control form-control-lg"
+                           placeholder="Ej: Ana Torres, 10203040 o Analista"
+                           value="<?php echo htmlspecialchars($termino ?? ''); ?>">
+                </div>
+            </div>
+        </div>
+
+        <?php if (!empty($termino)): ?>
+            <h1 class="h5 mb-3">Resultados para: "<?php echo htmlspecialchars($termino); ?>"</h1>
+        <?php else: ?>
+            <h1 class="h5 mb-3">Todos los empleados</h1>
+        <?php endif; ?>
 
         <?php if (empty($results)): ?>
-            <div class="alert alert-warning">
-                No se encontraron empleados que coincidan con "<?php echo htmlspecialchars($termino); ?>".
+            <div class="alert alert-warning" id="noResults">
+                <?php if (!empty($termino)): ?>
+                    No se encontraron empleados que coincidan con "<?php echo htmlspecialchars($termino); ?>".
+                <?php else: ?>
+                    No hay empleados registrados.
+                <?php endif; ?>
             </div>
-            <a href="index.php" class="btn btn-outline-vinus">Nueva búsqueda</a>
         <?php else: ?>
             <div class="table-responsive">
                 <table class="table table-hover align-middle vinus-table">
@@ -44,27 +68,22 @@
                             <th class="text-center">Acciones del Certificado</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="employeeRows">
                     <?php foreach ($results as $r): ?>
-                        <tr>
+                        <tr data-search="<?php echo htmlspecialchars(strtolower($r['nombre_completo'] . ' ' . $r['numero_documento'] . ' ' . $r['cargo'])); ?>">
                             <td><strong><?php echo htmlspecialchars($r['nombre_completo']); ?></strong></td>
                             <td><?php echo htmlspecialchars($r['numero_documento']); ?></td>
                             <td><?php echo htmlspecialchars($r['cargo']); ?></td>
                             <td>
                                           <div class="d-flex justify-content-center flex-wrap gap-2">
-                                    <a href="index.php?controller=certificado&action=verCertificado&id=<?php echo $r['id_empleados']; ?>&incluir_salario=1"
-                                                    class="btn btn-sm btn-outline-vinus" title="Vista para imprimir">
-                                       Ver PDF
-                                    </a>
-
-                                    <a href="index.php?controller=certificado&action=generar&id=<?php echo $r['id_empleados']; ?>&incluir_salario=0"
+                                                <a href="index.php?controller=certificado&action=generar&id=<?php echo $r['id_empleados']; ?>&incluir_salario=0"
                                                     class="btn btn-sm btn-vinus">
-                                       Word
+                                                    PDF
                                     </a>
 
                                     <a href="index.php?controller=certificado&action=generar&id=<?php echo $r['id_empleados']; ?>&incluir_salario=1"
                                                     class="btn btn-sm btn-vinus-accent">
-                                       Word + Salario
+                                                    PDF + Salario
                                     </a>
                                 </div>
                             </td>
@@ -75,5 +94,51 @@
             </div>
         <?php endif; ?>
     </div>
+    <script>
+        (function () {
+            const input = document.getElementById('employeeSearch');
+            const rowsContainer = document.getElementById('employeeRows');
+            const noResults = document.getElementById('noResults');
+
+            if (!input || !rowsContainer) return;
+
+            const rows = Array.from(rowsContainer.querySelectorAll('tr'));
+
+            const normalize = (value) => (value || '')
+                .toString()
+                .trim()
+                .toLowerCase();
+
+            const applyFilter = () => {
+                const term = normalize(input.value);
+                let visibleCount = 0;
+
+                rows.forEach((row) => {
+                    const haystack = normalize(row.getAttribute('data-search'));
+                    const match = term === '' || haystack.includes(term);
+                    row.style.display = match ? '' : 'none';
+                    if (match) visibleCount += 1;
+                });
+
+                if (noResults) {
+                    noResults.style.display = visibleCount === 0 ? '' : 'none';
+                }
+            };
+
+            input.addEventListener('input', applyFilter);
+            applyFilter();
+        })();
+
+        document.querySelectorAll('.vinus-navbar .navbar-brand').forEach((brand) => {
+            brand.addEventListener('mousemove', (event) => {
+                const rect = brand.getBoundingClientRect();
+                const x = ((event.clientX - rect.left) / rect.width) * 100;
+                brand.style.setProperty('--hover-x', `${Math.max(0, Math.min(100, x))}%`);
+            });
+            brand.addEventListener('mouseleave', () => {
+                brand.style.removeProperty('--hover-x');
+            });
+        });
+    </script>
 </body>
 </html>

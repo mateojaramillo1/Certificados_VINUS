@@ -15,8 +15,13 @@ if (session_status() === PHP_SESSION_NONE) {
 </head>
 <body class="vinus-app">
     <nav class="navbar navbar-expand-lg navbar-dark vinus-navbar">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.php?controller=auth&action=dashboard">VINUS <span>S.A.S</span></a>
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a class="navbar-brand vinus-brand" href="index.php?controller=auth&action=dashboard">
+                <img src="images/logo.png" alt="VINUS" class="navbar-logo" onerror="this.src='images/logo.svg'">
+            </a>
+            <a href="index.php?controller=auth&action=dashboard" class="btn btn-outline-light btn-sm">
+                Volver al Dashboard
+            </a>
         </div>
     </nav>
 
@@ -30,7 +35,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <a href="index.php?controller=plantilla&action=crear" class="btn btn-vinus">
                     <i class="bi bi-plus-circle"></i> Nueva Plantilla
                 </a>
-                <a href="index.php?controller=auth&action=dashboard" class="btn btn-outline-vinus">Volver al Dashboard</a>
+                
             </div>
         </div>
 
@@ -124,5 +129,17 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.vinus-navbar .navbar-brand').forEach((brand) => {
+            brand.addEventListener('mousemove', (event) => {
+                const rect = brand.getBoundingClientRect();
+                const x = ((event.clientX - rect.left) / rect.width) * 100;
+                brand.style.setProperty('--hover-x', `${Math.max(0, Math.min(100, x))}%`);
+            });
+            brand.addEventListener('mouseleave', () => {
+                brand.style.removeProperty('--hover-x');
+            });
+        });
+    </script>
 </body>
 </html>

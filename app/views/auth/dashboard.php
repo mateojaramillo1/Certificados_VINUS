@@ -29,8 +29,8 @@ $empresa = require __DIR__ . '/../../config/company.php';
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark vinus-navbar">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="bi bi-file-earmark-text"></i> VINUS <span>S.A.S</span>
+            <a class="navbar-brand vinus-brand" href="#">
+                <img src="images/logo.png" alt="VINUS" class="navbar-logo" onerror="this.src='images/logo.svg'">
             </a>
             <div class="d-flex align-items-center gap-3">
                 <?php if (!empty($_SESSION['is_admin'])): ?>
@@ -40,7 +40,7 @@ $empresa = require __DIR__ . '/../../config/company.php';
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item" href="index.php">
+                                <a class="dropdown-item" href="index.php?controller=certificado&action=buscar">
                                     <i class="bi bi-search me-2"></i> Buscar Empleados
                                 </a>
                             </li>
@@ -173,5 +173,17 @@ $empresa = require __DIR__ . '/../../config/company.php';
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.vinus-navbar .navbar-brand').forEach((brand) => {
+            brand.addEventListener('mousemove', (event) => {
+                const rect = brand.getBoundingClientRect();
+                const x = ((event.clientX - rect.left) / rect.width) * 100;
+                brand.style.setProperty('--hover-x', `${Math.max(0, Math.min(100, x))}%`);
+            });
+            brand.addEventListener('mouseleave', () => {
+                brand.style.removeProperty('--hover-x');
+            });
+        });
+    </script>
 </body>
 </html>

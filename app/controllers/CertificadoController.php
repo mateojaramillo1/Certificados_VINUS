@@ -17,11 +17,8 @@ class CertificadoController
     public function buscar()
     {
         $q = trim($_GET['q'] ?? '');
-        $results = [];
-
-        if ($q !== '') {
-            $results = $this->buscarEmpleados($q);
-        }
+        $termino = $q;
+        $results = $q !== '' ? $this->buscarEmpleados($q) : $this->listarEmpleados();
 
         require __DIR__ . '/../views/certificados/list.php';
     }
@@ -61,6 +58,7 @@ class CertificadoController
             SELECT * FROM empleados
             WHERE numero_documento LIKE :query
             OR nombre_completo LIKE :query
+            OR cargo LIKE :query
             OR id_empleados = :id
             ORDER BY nombre_completo ASC
         ");
@@ -70,6 +68,17 @@ class CertificadoController
 
         $stmt->bindParam(':query', $searchParam, \PDO::PARAM_STR);
         $stmt->bindParam(':id', $idParam, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    private function listarEmpleados()
+    {
+        $db = \App\Core\Database::getInstance();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare("SELECT * FROM empleados ORDER BY nombre_completo ASC");
         $stmt->execute();
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

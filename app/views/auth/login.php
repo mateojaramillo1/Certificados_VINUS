@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
 </head>
-<body class="vinus-app auth-page">
+<body class="vinus-app auth-page auth-login">
     <div class="vinus-card auth-card p-0">
         <div class="auth-header text-center">
             <img src="images/logo.png" alt="VINUS" class="auth-logo mb-3" onerror="this.src='images/logo.svg'">
