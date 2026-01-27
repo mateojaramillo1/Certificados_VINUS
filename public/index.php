@@ -1,6 +1,5 @@
 <?php
 
-// 1. CARGA DE DEPENDENCIAS
 $composerAutoload = __DIR__ . '/../vendor/autoload.php';
 if (file_exists($composerAutoload)) {
     require $composerAutoload;
@@ -9,12 +8,10 @@ if (file_exists($composerAutoload)) {
     }
 }
 
-// 2. SESIÓN Y SEGURIDAD BÁSICA
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Forzar codificación UTF-8 solo en respuestas HTML (evitar descargas)
 $controllerParam = $_GET['controller'] ?? $_GET['c'] ?? 'auth';
 $action = $_GET['action'] ?? $_GET['a'] ?? 'showLogin';
 
@@ -23,7 +20,6 @@ if (!$isDownload) {
     header('Content-Type: text/html; charset=UTF-8');
 }
 
-// 3. AUTOLOAD PSR-4 (Conexión de clases con archivos)
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
     $baseDir = __DIR__ . '/../app/';
@@ -34,18 +30,12 @@ spl_autoload_register(function ($class) {
     if (file_exists($file)) require $file;
 });
 
-// 4. INICIALIZACIÓN DE CONEXIÓN A BASE DE DATOS
-// Esto asegura que cualquier controlador pueda usar la DB inmediatamente
 try {
     \App\Core\Database::getInstance()->getConnection();
 } catch (\Exception $e) {
     die("Error crítico: No se pudo conectar a la base de datos de VINUS S.A.S.");
 }
 
-// 5. PROCESAMIENTO DE RUTA (Controller / Action)
-
-// 6. MIDDLEWARE DE AUTENTICACIÓN (Protección de Base de Datos)
-// Lista de controladores que requieren que el usuario esté logueado
 $rutasProtegidas = ['certificado', 'plantilla', 'empleado'];
 
 if (in_array($controllerParam, $rutasProtegidas) && empty($_SESSION['user_id'])) {
@@ -53,14 +43,11 @@ if (in_array($controllerParam, $rutasProtegidas) && empty($_SESSION['user_id']))
     exit;
 }
 
-// Siempre mostrar login al ingresar (no auto-redirigir por sesión previa)
-
-// 7. INSTANCIACIÓN DINÁMICA
 $controllerClass = 'App\\Controllers\\' . ucfirst($controllerParam) . 'Controller';
 
 if (!class_exists($controllerClass)) {
     header('HTTP/1.0 404 Not Found');
-    include __DIR__ . '/../views/errors/404.php'; // Recomendado usar una vista
+    include __DIR__ . '/../views/errors/404.php';
     exit;
 }
 
@@ -72,7 +59,5 @@ if (!method_exists($controller, $action)) {
     exit;
 }
 
-// 8. EJECUCIÓN
 $controller->{$action}();
-
 

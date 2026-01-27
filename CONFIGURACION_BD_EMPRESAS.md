@@ -41,7 +41,7 @@ C:\xampp\mysql\bin\mysql.exe -u root < crear_bd_completa.sql
 
 El script crea automáticamente:
 - **Empresa:** VINUS S.A.S (NIT: 900123456-7)
-- **Usuario Admin:** 
+- **Usuario Admin:**
   - Documento: 1234567890
   - Contraseña: 1234567890 (mismo documento)
   - Es administrador: Sí

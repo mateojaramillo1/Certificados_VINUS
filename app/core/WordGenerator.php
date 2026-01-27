@@ -30,11 +30,11 @@ class WordGenerator
         } elseif (is_object($this->plantilla) && method_exists($this->plantilla, 'getRutaCompleta')) {
             $rutaPlantilla = $this->plantilla->getRutaCompleta();
         }
-        
+
         if (!$rutaPlantilla) {
             throw new \Exception('No se pudo resolver la ruta de la plantilla activa.');
         }
-        
+
         if (!file_exists($rutaPlantilla)) {
             throw new \Exception('El archivo físico de la plantilla no existe en el servidor.');
         }
@@ -52,7 +52,7 @@ class WordGenerator
         $company = require __DIR__ . '/../config/company.php';
 
         $meses = ['', 'enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-        
+
         $fechaIngObj = new \DateTime($empleado->fecha_ingreso);
         $diaIngreso = $fechaIngObj->format('d');
         $mesIngreso = $meses[(int)$fechaIngObj->format('n')];
@@ -63,7 +63,7 @@ class WordGenerator
         $this->templateProcessor->setValue('cedula', $empleado->numero_documento);
         $this->templateProcessor->setValue('cargo', $empleado->cargo);
         $this->templateProcessor->setValue('tipo_contrato', $empleado->tipo_contrato ?? 'término indefinido');
-        
+
         $this->templateProcessor->setValue('fecha_ingreso', $f_ingreso_texto);
         $this->templateProcessor->setValue('dia_ingreso', $diaIngreso);
         $this->templateProcessor->setValue('mes_ingreso', $mesIngreso);
@@ -92,7 +92,7 @@ class WordGenerator
         $this->templateProcessor->setValue('empresa_nombre', $company['name']);
         $this->templateProcessor->setValue('empresa_nit', $company['nit']);
         $this->templateProcessor->setValue('ciudad', $company['city']);
-        
+
         $this->templateProcessor->setValue('dia', date('j'));
         $this->templateProcessor->setValue('dia_letras', NumeroALetras::convertirDia(date('j')));
         $this->templateProcessor->setValue('mes', $meses[(int)date('n')]);

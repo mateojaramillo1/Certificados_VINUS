@@ -27,7 +27,7 @@ class PdfGenerator
         $meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
         $mes = $meses[(int)date('n')-1];
         $anio = date('Y');
-        
+
         $nombre = mb_strtoupper($empleado->nombre_completo, 'UTF-8');
         $documento = $empleado->numero_documento;
         $cargo = $empleado->cargo;
@@ -54,7 +54,7 @@ class PdfGenerator
 
         // 3. Cuerpo del mensaje
         $this->pdf->SetFont('Arial', '', 12);
-        
+
         $texto = "Que el(la) señor(a) " . $nombre . ", identificado(a) con cédula de ciudadanía No. " . $documento . ", ";
         $texto .= "labora en nuestra compañía desde el día " . $fechaIngreso . ", desempeñado el cargo de " . $cargo;
         $texto .= " mediante un contrato de trabajo " . $tipoContrato;

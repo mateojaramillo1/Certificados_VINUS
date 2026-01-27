@@ -44,13 +44,13 @@ El señor o la señora ${nombre} identificado(a) con cédula de ciudadanía No. 
 ## Ejemplo de texto completo
 
 ```
-Que el señor o la señora ${nombre} identificado(a) con cédula de ciudadanía 
-No. ${cedula}, está vinculado(a) por la empresa ${empresa_nombre} con NIT 
-${empresa_nit}, mediante un contrato ${tipo_contrato} desde el ${dia_ingreso} 
-de ${mes_ingreso} de ${anio_ingreso} a la fecha; desempeñándose en el cargo 
+Que el señor o la señora ${nombre} identificado(a) con cédula de ciudadanía
+No. ${cedula}, está vinculado(a) por la empresa ${empresa_nombre} con NIT
+${empresa_nit}, mediante un contrato ${tipo_contrato} desde el ${dia_ingreso}
+de ${mes_ingreso} de ${anio_ingreso} a la fecha; desempeñándose en el cargo
 de ${cargo} para la ejecución del Proyecto Vías del Nus${clausula_salario}.
 
-El presente certificado se expide en la ciudad de ${ciudad}, a los ${dia} 
+El presente certificado se expide en la ciudad de ${ciudad}, a los ${dia}
 (${dia_letras}) días del mes de ${mes} de ${anio}.
 ```
 

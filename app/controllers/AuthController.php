@@ -32,7 +32,7 @@ class AuthController
 
     public function login()
     {
-        $documento = trim($_POST['numero_documento'] ?? ''); 
+        $documento = trim($_POST['numero_documento'] ?? '');
 
         if ($documento === '') {
             $error = 'El documento es requerido.';
@@ -57,7 +57,7 @@ class AuthController
         $_SESSION['user_id'] = $user['id_empleados'];
         $_SESSION['user_name'] = $user['nombre_completo'];
         $_SESSION['is_admin'] = $user['is_admin'];
-        
+
         header('Location: index.php?controller=auth&action=dashboard');
         exit;
     }
@@ -127,7 +127,7 @@ class AuthController
     public function logout()
     {
         $_SESSION = array();
-        
+
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
             setcookie(
@@ -140,7 +140,7 @@ class AuthController
                 $params["httponly"]
             );
         }
-        
+
         session_destroy();
         header('Location: index.php?controller=auth&action=showLogin');
         exit;

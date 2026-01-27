@@ -17,7 +17,7 @@ class NumeroALetras
 
         $numero = intval($numero);
         $numeroOriginal = $numero;
-        
+
         if ($numero < 0) {
             return 'número negativo';
         }
@@ -25,16 +25,16 @@ class NumeroALetras
         // Separar en billones, miles de millones, millones, miles y unidades
         $billones = intval($numero / 1000000000000);
         $numero %= 1000000000000;
-        
+
         $milesMillones = intval($numero / 1000000000);
         $numero %= 1000000000;
-        
+
         $millones = intval($numero / 1000000);
         $numero %= 1000000;
-        
+
         $miles = intval($numero / 1000);
         $numero %= 1000;
-        
+
         $unidades = $numero;
 
         $resultado = '';
@@ -72,7 +72,7 @@ class NumeroALetras
         }
 
         $resultado = trim($resultado);
-        
+
         // Agregar "pesos" al final
         if ($resultado == 'un') {
             $resultado .= ' peso';
@@ -137,14 +137,14 @@ class NumeroALetras
         $centavos = isset($partes[1]) ? intval($partes[1]) : 0;
 
         $resultado = self::convertir($entero);
-        
+
         if ($centavos > 0) {
             $resultado .= ' con ' . $centavos . '/100';
         }
 
         return $resultado;
     }
-    
+
     /**
      * Convierte un día del mes (1-31) a letras
      * @param int $dia El número del día (1-31)
@@ -153,22 +153,22 @@ class NumeroALetras
     public static function convertirDia($dia)
     {
         $dia = intval($dia);
-        
+
         if ($dia < 1 || $dia > 31) {
             return 'día inválido';
         }
-        
+
         // Casos especiales para días del 1 al 19
         if ($dia >= 1 && $dia <= 9) {
             return self::$unidades[$dia];
         } elseif ($dia >= 10 && $dia <= 19) {
             return self::$especiales[$dia - 10];
         }
-        
+
         // Para días del 20 al 31
         $decena = intval($dia / 10);
         $unidad = $dia % 10;
-        
+
         if ($decena == 2) {
             if ($unidad == 0) {
                 return 'veinte';
@@ -182,7 +182,7 @@ class NumeroALetras
                 return 'treinta y ' . self::$unidades[$unidad];
             }
         }
-        
+
         return 'día inválido';
     }
 }

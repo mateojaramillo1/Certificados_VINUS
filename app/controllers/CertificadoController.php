@@ -18,11 +18,11 @@ class CertificadoController
     {
         $q = trim($_GET['q'] ?? '');
         $results = [];
-        
+
         if ($q !== '') {
             $results = $this->buscarEmpleados($q);
         }
-        
+
         require __DIR__ . '/../views/certificados/list.php';
     }
 
@@ -56,29 +56,29 @@ class CertificadoController
     {
         $db = \App\Core\Database::getInstance();
         $conn = $db->getConnection();
-        
+
         $stmt = $conn->prepare("
-            SELECT * FROM empleados 
-            WHERE numero_documento LIKE :query 
-            OR nombre_completo LIKE :query 
+            SELECT * FROM empleados
+            WHERE numero_documento LIKE :query
+            OR nombre_completo LIKE :query
             OR id_empleados = :id
             ORDER BY nombre_completo ASC
         ");
-        
+
         $searchParam = "%{$query}%";
         $idParam = is_numeric($query) ? intval($query) : 0;
-        
+
         $stmt->bindParam(':query', $searchParam, \PDO::PARAM_STR);
         $stmt->bindParam(':id', $idParam, \PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function generar()
     {
         $id = $_GET['id'] ?? $_POST['id'] ?? null;
-        
+
         if (!$id) {
             $_SESSION['error'] = 'ID de empleado no válido';
             header('Location: index.php');
@@ -86,7 +86,7 @@ class CertificadoController
         }
 
         $empleado = Empleado::findById($id);
-        
+
         if (!$empleado) {
             $_SESSION['error'] = 'Empleado no encontrado';
             header('Location: index.php');
@@ -97,7 +97,7 @@ class CertificadoController
         $incluirSalario = filter_var($valorIncluir, FILTER_VALIDATE_BOOLEAN);
 
         $plantillaActiva = PlantillaWord::getActiva();
-        
+
         if ($plantillaActiva) {
             $this->generarWord($empleado, $incluirSalario);
         } else {
@@ -110,26 +110,26 @@ class CertificadoController
         try {
             $wordGen = new WordGenerator();
             $wordGen->generarCertificado((object)$empleado, $incluirSalario);
-            
+
             $nombreArchivo = 'Certificado_' . preg_replace('/[^a-zA-Z0-9]/', '_', $empleado['nombre_completo']);
             $wordGen->descargar($nombreArchivo);
-            
+
         } catch (\Exception $e) {
             $_SESSION['error'] = 'Error al generar certificado Word: ' . $e->getMessage();
             header('Location: index.php?controller=auth&action=dashboard');
             exit;
         }
     }
-    
+
     private function generarPdf($empleado, $incluirSalario = false)
     {
         try {
             $pdfGen = new PdfGenerator();
             $pdfGen->generarCertificado((object)$empleado, $incluirSalario);
-            
+
             $nombreArchivo = 'Certificado_' . preg_replace('/[^a-zA-Z0-9]/', '_', $empleado['nombre_completo']) . '.pdf';
             $pdfGen->descargar($nombreArchivo);
-            
+
         } catch (\Exception $e) {
             $_SESSION['error'] = 'Error al generar certificado PDF: ' . $e->getMessage();
             header('Location: index.php?controller=auth&action=dashboard');

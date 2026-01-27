@@ -3,53 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sistema de Certificados</title>
+    <title>VINUS S.A.S — Iniciar Sesión</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-            max-width: 400px;
-            width: 100%;
-        }
-        .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-        .login-body {
-            padding: 2rem;
-        }
-        .btn-login {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            width: 100%;
-        }
-        .btn-login:hover {
-            background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
-        }
-    </style>
+    <link rel="stylesheet" href="css/estilos.css">
 </head>
-<body>
-    <div class="login-card">
-        <div class="login-header">
-            <h2 class="mb-0">Sistema de Certificados</h2>
-            <p class="mb-0 mt-2">Iniciar Sesión</p>
+<body class="vinus-app auth-page">
+    <div class="vinus-card auth-card p-0">
+        <div class="auth-header text-center">
+            <img src="images/logo.png" alt="VINUS" class="auth-logo mb-3" onerror="this.src='images/logo.svg'">
+            <h2>VINUS S.A.S</h2>
+            <p class="mb-0">Sistema de Certificados</p>
         </div>
-        <div class="login-body">
+        <div class="p-4">
             <?php if (isset($_GET['error'])): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Error:</strong> 
+                    <strong>Error:</strong>
                     <?php
                         if ($_GET['error'] === 'credenciales') {
                             echo 'Número de documento o contraseña incorrectos';
@@ -78,32 +46,22 @@
             <form action="index.php?controller=auth&action=login" method="POST">
                 <div class="mb-4">
                     <label for="numero_documento" class="form-label">Número de Documento</label>
-                    <input type="text" 
-                           class="form-control form-control-lg" 
-                           id="numero_documento" 
-                           name="numero_documento" 
-                           placeholder="Ingrese su número de documento" 
-                           required 
+                    <input type="text"
+                           class="form-control form-control-lg"
+                           id="numero_documento"
+                           name="numero_documento"
+                           placeholder="Ingrese su número de documento"
+                           required
                            autofocus>
                 </div>
-                <button type="submit" class="btn btn-primary btn-lg btn-login">
+                <button type="submit" class="btn btn-vinus btn-lg w-100">
                     Ingresar
                 </button>
             </form>
-
-            <div class="text-center mt-3">
-                <p class="mb-0">
-                    ¿No tienes cuenta? 
-                    <a href="index.php?controller=auth&action=showRegister" class="text-decoration-none">
-                        Regístrate aquí
-                    </a>
-                </p>
-            </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
 

@@ -26,37 +26,22 @@ $fechaRetiroTexto = ($empleado->fecha_retiro) ? date('d/m/Y', strtotime($emplead
     <title>Certificado - <?php echo htmlspecialchars($empleado->nombre_completo); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
-    <style>
-        .certificado {
-            background: #fff;
-            padding: 2.5cm;
-            margin: 1rem auto;
-            max-width: 21cm;
-            min-height: 27cm;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            line-height: 1.6;
-            font-size: 12pt;
-            color: #000;
-        }
-        @media print {
-            body { background: none; }
-            .certificado { box-shadow: none; margin: 0; padding: 1.5cm; }
-            .no-print { display: none !important; }
-        }
-    </style>
 </head>
-<body>
-    <div class="container">
-        <div class="certificado">
-            <div class="d-flex align-items-center gap-3 mb-4">
-                <img src="images/logo.png" alt="logo" style="height:70px" onerror="this.src='images/logo.svg'">
-                <div>
-                    <h2 class="m-0 h4"><?php echo htmlspecialchars($company['name']); ?></h2>
-                    <small class="text-muted">
-                        NIT: <?php echo htmlspecialchars($company['nit']); ?> | 
-                        <?php echo htmlspecialchars($company['address']); ?>
-                    </small>
+<body class="vinus-app">
+    <div class="container vinus-container">
+        <div class="certificate-sheet">
+            <div class="certificate-header d-flex align-items-center justify-content-between gap-3 mb-4">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="images/logo.png" alt="logo" style="height:70px" onerror="this.src='images/logo.svg'">
+                    <div>
+                        <h2 class="m-0 h4"><?php echo htmlspecialchars($company['name']); ?></h2>
+                        <small class="vinus-muted">
+                            NIT: <?php echo htmlspecialchars($company['nit']); ?> |
+                            <?php echo htmlspecialchars($company['address']); ?>
+                        </small>
+                    </div>
                 </div>
+                <span class="vinus-pill">VINUS S.A.S</span>
             </div>
 
             <h3 class="text-center my-5">CERTIFICACIÓN LABORAL</h3>
@@ -64,14 +49,14 @@ $fechaRetiroTexto = ($empleado->fecha_retiro) ? date('d/m/Y', strtotime($emplead
             <p>La empresa <strong><?php echo htmlspecialchars($company['name']); ?></strong>, identificada con NIT <strong><?php echo htmlspecialchars($company['nit']); ?></strong>, certifica que:</p>
 
             <p class="text-justify">
-                El(La) señor(a) <strong><?php echo htmlspecialchars($empleado->nombre_completo); ?></strong>, 
-                identificado(a) con cédula de ciudadanía No. <strong><?php echo htmlspecialchars($empleado->numero_documento); ?></strong>, 
-                labora (o laboró) en esta organización desde el <strong><?php echo $fechaIngresoFormateada; ?></strong> 
-                hasta <strong><?php echo $fechaRetiroTexto; ?></strong>, desempeñando el cargo de 
-                <strong><?php echo htmlspecialchars($empleado->cargo); ?></strong>, mediante un contrato de trabajo 
-                <strong><?php echo htmlspecialchars($empleado->tipo_contrato); ?></strong><?php 
-                if (isset($incluirSalario) && $incluirSalario && !empty($empleado->salario_basico)): ?>, 
-                devengando un salario mensual de <strong><?php echo '$' . number_format($empleado->salario_basico, 0, ',', '.'); ?></strong> 
+                El(La) señor(a) <strong><?php echo htmlspecialchars($empleado->nombre_completo); ?></strong>,
+                identificado(a) con cédula de ciudadanía No. <strong><?php echo htmlspecialchars($empleado->numero_documento); ?></strong>,
+                labora (o laboró) en esta organización desde el <strong><?php echo $fechaIngresoFormateada; ?></strong>
+                hasta <strong><?php echo $fechaRetiroTexto; ?></strong>, desempeñando el cargo de
+                <strong><?php echo htmlspecialchars($empleado->cargo); ?></strong>, mediante un contrato de trabajo
+                <strong><?php echo htmlspecialchars($empleado->tipo_contrato); ?></strong><?php
+                if (isset($incluirSalario) && $incluirSalario && !empty($empleado->salario_basico)): ?>,
+                devengando un salario mensual de <strong><?php echo '$' . number_format($empleado->salario_basico, 0, ',', '.'); ?></strong>
                 (<?php echo mb_strtoupper(NumeroALetras::convertir($empleado->salario_basico)); ?>)<?php endif; ?>.
             </p>
 
@@ -89,7 +74,7 @@ $fechaRetiroTexto = ($empleado->fecha_retiro) ? date('d/m/Y', strtotime($emplead
                             <img src="<?php echo $rutaFirma; ?>" alt="Firma" style="height:80px">
                         </div>
                 <?php endif; ?>
-                
+
                 <p class="lh-sm">
                     <strong><?php echo htmlspecialchars($company['responsible_name']); ?></strong><br>
                     <?php echo htmlspecialchars($company['responsible_title']); ?><br>
@@ -98,8 +83,8 @@ $fechaRetiroTexto = ($empleado->fecha_retiro) ? date('d/m/Y', strtotime($emplead
             </div>
 
             <div class="no-print mt-5 pt-4 border-top">
-                <button onclick="window.print()" class="btn btn-primary">Imprimir / Guardar PDF</button>
-                <a class="btn btn-outline-secondary" href="index.php?controller=auth&action=dashboard">Volver al Dashboard</a>
+                <button onclick="window.print()" class="btn btn-vinus">Imprimir / Guardar PDF</button>
+                <a class="btn btn-outline-vinus" href="index.php?controller=auth&action=dashboard">Volver al Dashboard</a>
             </div>
         </div>
     </div>

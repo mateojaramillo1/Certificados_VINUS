@@ -41,7 +41,7 @@ class PlantillaController
             } else {
                 $archivo = $_FILES['archivo'];
                 $extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-                
+
                 if (!in_array($extension, ['doc', 'docx'])) {
                     $errors[] = 'Solo se permiten archivos Word (.doc o .docx)';
                 }
@@ -64,7 +64,7 @@ class PlantillaController
                             $nombreArchivo = basename($rutaConvertida);
                         }
                     }
-                    
+
                     PlantillaWord::create([
                         'nombre' => $nombre,
                         'descripcion' => $descripcion,
@@ -89,13 +89,13 @@ class PlantillaController
     {
         $this->checkAdmin();
         $id = $_GET['id'] ?? null;
-        
+
         if ($id && PlantillaWord::activar($id)) {
             $_SESSION['mensaje'] = 'Plantilla principal actualizada';
         } else {
             $_SESSION['error'] = 'No se pudo activar la plantilla';
         }
-        
+
         header('Location: index.php?controller=plantilla&action=index');
         exit;
     }
@@ -104,7 +104,7 @@ class PlantillaController
     {
         $this->checkAdmin();
         $id = $_GET['id'] ?? null;
-        
+
         if (!$id) {
             $_SESSION['error'] = 'ID de plantilla no válido';
             header('Location: index.php?controller=plantilla&action=index');
@@ -112,7 +112,7 @@ class PlantillaController
         }
 
         $plantilla = PlantillaWord::findById($id);
-        
+
         if (!$plantilla) {
             $_SESSION['error'] = 'La plantilla no existe';
             header('Location: index.php?controller=plantilla&action=index');
@@ -124,7 +124,7 @@ class PlantillaController
         } else {
             $_SESSION['error'] = 'No se pudo eliminar la plantilla';
         }
-        
+
         header('Location: index.php?controller=plantilla&action=index');
         exit;
     }
@@ -133,11 +133,11 @@ class PlantillaController
     {
         $dirPlantillas = realpath(__DIR__ . '/../../public/plantillas/');
         $rutaDocx = $dirPlantillas . DIRECTORY_SEPARATOR . $nombreBase . '.docx';
-        
+
         // Comando para sistemas Linux/Windows con LibreOffice
         // --headless ejecuta sin interfaz gráfica
         $comando = "libreoffice --headless --convert-to docx --outdir " . escapeshellarg($dirPlantillas) . " " . escapeshellarg($rutaDoc);
-        
+
         exec($comando);
 
         return file_exists($rutaDocx) ? $rutaDocx : false;

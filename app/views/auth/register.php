@@ -3,51 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - Sistema de Certificados</title>
+    <title>Registro — VINUS S.A.S</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem 0;
-        }
-        .register-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-            max-width: 600px;
-            width: 100%;
-        }
-        .register-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-        .register-body {
-            padding: 2rem;
-        }
-        .btn-register {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            width: 100%;
-        }
-        .btn-register:hover {
-            background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
-        }
-    </style>
+    <link rel="stylesheet" href="css/estilos.css">
 </head>
-<body>
-    <div class="register-card">
-        <div class="register-header">
-            <h2 class="mb-0">Sistema de Certificados</h2>
-            <p class="mb-0 mt-2">Registro de Usuario</p>
+<body class="vinus-app auth-page">
+    <div class="vinus-card auth-card p-0" style="max-width:720px;">
+        <div class="auth-header text-center">
+            <h2>VINUS S.A.S</h2>
+            <p class="mb-0">Registro de Usuario</p>
         </div>
-        <div class="register-body">
+        <div class="p-4">
             <?php if (isset($error)): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>Error:</strong> <?php echo htmlspecialchars($error); ?>
@@ -59,21 +25,21 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="nombre_completo" class="form-label">Nombre Completo *</label>
-                        <input type="text" 
-                               class="form-control" 
-                               id="nombre_completo" 
-                               name="nombre_completo" 
+                        <input type="text"
+                               class="form-control"
+                               id="nombre_completo"
+                               name="nombre_completo"
                                placeholder="Ej: Juan Pérez García"
                                value="<?php echo htmlspecialchars($_POST['nombre_completo'] ?? ''); ?>"
-                               required 
+                               required
                                autofocus>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="numero_documento" class="form-label">Número de Documento *</label>
-                        <input type="text" 
-                               class="form-control" 
-                               id="numero_documento" 
-                               name="numero_documento" 
+                        <input type="text"
+                               class="form-control"
+                               id="numero_documento"
+                               name="numero_documento"
                                placeholder="Ej: 1234567890"
                                value="<?php echo htmlspecialchars($_POST['numero_documento'] ?? ''); ?>"
                                required>
@@ -86,16 +52,16 @@
                         <label for="id_empresa" class="form-label">Empresa *</label>
                         <select class="form-select" id="id_empresa" name="id_empresa" required>
                             <option value="">Seleccione una empresa...</option>
-                            <?php 
+                            <?php
                             if (isset($empresas) && is_array($empresas)):
-                                foreach ($empresas as $empresa): 
+                                foreach ($empresas as $empresa):
                             ?>
                                 <option value="<?php echo $empresa['id_empresa']; ?>"
                                     <?php echo (isset($_POST['id_empresa']) && $_POST['id_empresa'] == $empresa['id_empresa']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($empresa['nombre_empresa']); ?> 
+                                    <?php echo htmlspecialchars($empresa['nombre_empresa']); ?>
                                     (<?php echo htmlspecialchars($empresa['nit']); ?>)
                                 </option>
-                            <?php 
+                            <?php
                                 endforeach;
                             endif;
                             ?>
@@ -103,10 +69,10 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="cargo" class="form-label">Cargo</label>
-                        <input type="text" 
-                               class="form-control" 
-                               id="cargo" 
-                               name="cargo" 
+                        <input type="text"
+                               class="form-control"
+                               id="cargo"
+                               name="cargo"
                                placeholder="Ej: Analista"
                                value="<?php echo htmlspecialchars($_POST['cargo'] ?? ''); ?>">
                     </div>
@@ -124,10 +90,10 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="salario_basico" class="form-label">Salario Básico</label>
-                        <input type="number" 
-                               class="form-control" 
-                               id="salario_basico" 
-                               name="salario_basico" 
+                        <input type="number"
+                               class="form-control"
+                               id="salario_basico"
+                               name="salario_basico"
                                placeholder="Ej: 1500000"
                                value="<?php echo htmlspecialchars($_POST['salario_basico'] ?? ''); ?>"
                                step="1000"
@@ -137,28 +103,28 @@
 
                 <div class="mb-3">
                     <label for="fecha_ingreso" class="form-label">Fecha de Ingreso</label>
-                    <input type="date" 
-                           class="form-control" 
-                           id="fecha_ingreso" 
-                           name="fecha_ingreso" 
+                    <input type="date"
+                           class="form-control"
+                           id="fecha_ingreso"
+                           name="fecha_ingreso"
                            value="<?php echo htmlspecialchars($_POST['fecha_ingreso'] ?? date('Y-m-d')); ?>">
                 </div>
 
                 <div class="alert alert-info" role="alert">
                     <small>
-                        <strong>Nota:</strong> Tu número de documento será usado como contraseña inicial. 
+                        <strong>Nota:</strong> Tu número de documento será usado como contraseña inicial.
                         Podrás cambiarla después de iniciar sesión.
                     </small>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg btn-register">
+                <button type="submit" class="btn btn-vinus-accent btn-lg w-100">
                     Registrarse
                 </button>
             </form>
 
             <div class="text-center mt-3">
                 <p class="mb-0">
-                    ¿Ya tienes cuenta? 
+                    ¿Ya tienes cuenta?
                     <a href="index.php?controller=auth&action=showLogin" class="text-decoration-none">
                         Inicia sesión aquí
                     </a>
