@@ -24,7 +24,7 @@
             <div class="col-md-7">
                 <div class="vinus-card vinus-hero">
                     <div class="text-center mb-4">
-                        <img src="images/logo.png" alt="VINUS logo" style="height:60px;" onerror="this.src='images/logo.svg'">
+                        <img src="images/logo.png" alt="VINUS logo" style="height:100px;" onerror="this.src='images/logo.svg'">
                         <h1 class="h3 mt-3 mb-2">Generar Certificado Laboral</h1>
                         <p class="vinus-muted mb-0">Ingrese los datos del colaborador para buscar en la base de datos.</p>
                     </div>

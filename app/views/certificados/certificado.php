@@ -32,7 +32,7 @@ $fechaRetiroTexto = ($empleado->fecha_retiro) ? date('d/m/Y', strtotime($emplead
         <div class="certificate-sheet">
             <div class="certificate-header d-flex align-items-center justify-content-between gap-3 mb-4">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="images/logo.png" alt="logo" style="height:70px" onerror="this.src='images/logo.svg'">
+                    <img src="images/logo.png" alt="logo" style="height:110px" onerror="this.src='images/logo.svg'">
                     <div>
                         <h2 class="m-0 h4"><?php echo htmlspecialchars($company['name']); ?></h2>
                         <small class="vinus-muted">

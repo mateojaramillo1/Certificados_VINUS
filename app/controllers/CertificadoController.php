@@ -10,6 +10,7 @@ use App\Core\PdfGenerator;
 
 class CertificadoController
 {
+    
     public function index()
     {
         require __DIR__ . '/../views/home.php';

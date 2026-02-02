@@ -21,7 +21,7 @@
     <div class="container vinus-container">
         <div class="d-flex align-items-center justify-content-between gap-3 mb-4 flex-wrap">
             <div class="d-flex align-items-center gap-3">
-                <img src="images/logo.png" alt="VINUS logo" style="height:50px;" onerror="this.src='images/logo.svg'">
+                <img src="images/logo.png" alt="VINUS logo" style="height:90px;" onerror="this.src='images/logo.svg'">
                 <div class="h4 m-0 fw-bold text-uppercase">Gestión de Empleados</div>
             </div>
             <a id="exportExcel" href="index.php?controller=certificado&action=exportar" class="btn btn-outline-vinus">

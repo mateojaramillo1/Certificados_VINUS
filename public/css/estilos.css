@@ -60,8 +60,8 @@ a:hover{color:var(--vinus-blue-dark)}
 .vinus-navbar .navbar-brand:hover{opacity:.9}
 
 .navbar-logo{
-	width:96px;
-	height:96px;
+	width:160px;
+	height:160px;
 	object-fit:contain;
 	background:transparent;
 	border-radius:0;
@@ -237,7 +237,7 @@ a:hover{color:var(--vinus-blue-dark)}
 	padding:1.75rem;
 }
 .auth-header h2{color:var(--vinus-white);margin:0}
-.auth-logo{width:72px;height:auto;border-radius:12px;background:#fff;padding:.35rem}
+.auth-logo{width:110px;height:auto;border-radius:12px;background:#fff;padding:.35rem}
 
 .auth-card .p-4{
 	background:linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.92) 100%);
