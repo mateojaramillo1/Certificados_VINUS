@@ -39,6 +39,9 @@ a:hover{color:var(--vinus-blue-dark)}
 	position:sticky;
 	top:0;
 	z-index:1030;
+	padding:.15rem 1rem;
+	min-height:64px;
+	overflow:visible;
 }
 .vinus-navbar .navbar-brand{
 	font-weight:700;
@@ -48,7 +51,7 @@ a:hover{color:var(--vinus-blue-dark)}
 	display:flex;
 	align-items:center;
 	gap:.8rem;
-	padding:.25rem 0;
+	padding:0;
 	transition:opacity .2s ease;
 }
 .vinus-navbar .navbar-brand span{color:inherit}
@@ -68,6 +71,8 @@ a:hover{color:var(--vinus-blue-dark)}
 	padding:0;
 	box-shadow:none;
 	filter:none;
+	margin-top:-22px;
+	margin-bottom:-22px;
 }
 
 
