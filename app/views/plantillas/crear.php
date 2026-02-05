@@ -6,7 +6,7 @@
     <title>Nueva Plantilla — VINUS S.A.S</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260202">
 </head>
 <body class="vinus-app">
     <nav class="navbar navbar-expand-lg navbar-dark vinus-navbar">
@@ -14,16 +14,21 @@
             <a class="navbar-brand vinus-brand" href="index.php?controller=auth&action=dashboard">
                 <img src="images/logo.png" alt="VINUS" class="navbar-logo" onerror="this.src='images/logo.svg'">
             </a>
-            <div class="navbar-nav ms-auto align-items-center gap-2">
-                <a href="index.php?controller=auth&action=dashboard" class="btn btn-outline-light btn-sm">
-                    Volver al Dashboard
-                </a>
-                <span class="navbar-text text-white me-3">
-                    <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuario'); ?>
-                </span>
-                <a href="index.php?controller=auth&action=logout" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-box-arrow-right"></i> Salir
-                </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#vinusNavbar" aria-controls="vinusNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="vinusNavbar">
+                <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+                    <a href="index.php?controller=auth&action=dashboard" class="btn btn-outline-light btn-sm">
+                        Volver al Dashboard
+                    </a>
+                    <span class="navbar-text text-white me-3">
+                        <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuario'); ?>
+                    </span>
+                    <a href="index.php?controller=auth&action=logout" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-box-arrow-right"></i> Salir
+                    </a>
+                </div>
             </div>
         </div>
     </nav>

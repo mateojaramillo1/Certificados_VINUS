@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <title>Plantillas Word — VINUS S.A.S</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260202">
 </head>
 <body class="vinus-app">
     <nav class="navbar navbar-expand-lg navbar-dark vinus-navbar">
@@ -19,9 +19,16 @@ if (session_status() === PHP_SESSION_NONE) {
             <a class="navbar-brand vinus-brand" href="index.php?controller=auth&action=dashboard">
                 <img src="images/logo.png" alt="VINUS" class="navbar-logo" onerror="this.src='images/logo.svg'">
             </a>
-            <a href="index.php?controller=auth&action=dashboard" class="btn btn-outline-light btn-sm">
-                Volver al Dashboard
-            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#vinusNavbar" aria-controls="vinusNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="vinusNavbar">
+                <div class="ms-auto">
+                    <a href="index.php?controller=auth&action=dashboard" class="btn btn-outline-light btn-sm">
+                        Volver al Dashboard
+                    </a>
+                </div>
+            </div>
         </div>
     </nav>
 

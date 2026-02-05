@@ -7,8 +7,16 @@ use App\Models\Empresa;
 
 class AuthController
 {
+    private function sendNoCacheHeaders(): void
+    {
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+    }
+
     public function showLogin()
     {
+        $this->sendNoCacheHeaders();
         if (!empty($_SESSION['user_id'])) {
             $_SESSION = [];
 
@@ -64,6 +72,7 @@ class AuthController
 
     public function showRegister()
     {
+        $this->sendNoCacheHeaders();
         $empresas = Empresa::getAll();
         require __DIR__ . '/../views/auth/register.php';
     }
@@ -116,6 +125,7 @@ class AuthController
 
     public function dashboard()
     {
+        $this->sendNoCacheHeaders();
         if (!isset($_SESSION['user_id'])) {
             header('Location: index.php?controller=auth&action=showLogin');
             exit;

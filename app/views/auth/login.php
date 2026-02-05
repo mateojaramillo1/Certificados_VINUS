@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VINUS S.A.S — Iniciar Sesión</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260202">
 </head>
 <body class="vinus-app auth-page auth-login">
     <div class="vinus-card auth-card p-0">
@@ -43,16 +43,16 @@
                 </div>
             <?php endif; ?>
 
-            <form action="index.php?controller=auth&action=login" method="POST">
-                <div class="mb-4">
-                    <label for="numero_documento" class="form-label">Número de Documento</label>
+            <form id="loginForm" action="index.php?controller=auth&action=login" method="POST">
+                <div class="mb-4 floating-field">
                     <input type="text"
                            class="form-control form-control-lg"
                            id="numero_documento"
                            name="numero_documento"
-                           placeholder="Ingrese su número de documento"
+                           placeholder=" "
                            required
                            autofocus>
+                    <label for="numero_documento" class="floating-label">Ingrese su número de documento</label>
                 </div>
                 <button type="submit" class="btn btn-vinus btn-lg w-100">
                     Ingresar
@@ -62,6 +62,22 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', (event) => {
+                if (loginForm.dataset.submitting === 'true') {
+                    return;
+                }
+                event.preventDefault();
+                loginForm.dataset.submitting = 'true';
+                document.body.classList.add('is-loading');
+                setTimeout(() => {
+                    loginForm.submit();
+                }, 150);
+            });
+        }
+    </script>
 </body>
 </html>
 

@@ -23,7 +23,7 @@ $empresa = require __DIR__ . '/../../config/company.php';
     <title>Dashboard — VINUS S.A.S</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260202">
 </head>
 <body class="vinus-app">
     <!-- Navbar -->
@@ -32,7 +32,11 @@ $empresa = require __DIR__ . '/../../config/company.php';
             <a class="navbar-brand vinus-brand" href="#">
                 <img src="images/logo.png" alt="VINUS" class="navbar-logo" onerror="this.src='images/logo.svg'">
             </a>
-            <div class="d-flex align-items-center gap-3">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#vinusNavbar" aria-controls="vinusNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="vinusNavbar">
+                <div class="dashboard-actions d-flex align-items-center gap-3 flex-wrap">
                 <?php if (!empty($_SESSION['is_admin'])): ?>
                     <div class="dropdown">
                         <button class="btn btn-outline-light btn-sm dropdown-toggle admin-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -64,6 +68,7 @@ $empresa = require __DIR__ . '/../../config/company.php';
                 <a href="index.php?controller=auth&action=logout" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                 </a>
+                </div>
             </div>
         </div>
     </nav>
