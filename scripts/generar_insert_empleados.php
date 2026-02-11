@@ -37,10 +37,20 @@ foreach ($lines as $line) {
     $cargo = trim($parts[2]);
     $fecha = trim($parts[3]);
 
-    // Convertir fecha a YYYY-MM-DD (acepta d/m/Y y m/d/Y)
-    $dt = DateTime::createFromFormat('d/m/Y', $fecha);
-    if (!$dt) {
-        $dt = DateTime::createFromFormat('m/d/Y', $fecha);
+    // Convertir fecha a YYYY-MM-DD (preferir dd/mm/yyyy)
+    $dt = null;
+    if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $fecha, $m)) {
+        $p1 = (int)$m[1];
+        $p2 = (int)$m[2];
+        if ($p1 > 12) {
+            $dt = DateTime::createFromFormat('d/m/Y', $fecha);
+        } elseif ($p2 > 12) {
+            $dt = DateTime::createFromFormat('m/d/Y', $fecha);
+        } else {
+            $dt = DateTime::createFromFormat('d/m/Y', $fecha);
+        }
+    } else {
+        $dt = DateTime::createFromFormat('d/m/Y', $fecha);
     }
     if (!$dt) {
         fwrite(STDERR, "Fecha inválida en la línea {$lineNumber}: {$fecha}\n");

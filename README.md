@@ -19,6 +19,7 @@ Sistema web PHP para generar certificados laborales automáticos en formato Word
 - Apache/XAMPP
 - Composer
 - Extensiones PHP: mbstring, pdo_mysql, zip
+- (Opcional) LibreOffice para convertir Word a PDF
 
 ## 🔧 Instalación
 
@@ -33,6 +34,14 @@ cd Certificados_VINUS
 composer install
 ```
 
+### 2.1. Habilitar extensiones PHP
+En el php.ini que usa **Apache/XAMPP**, habilita:
+
+- `extension=zip`
+- `extension=mbstring`
+
+Luego reinicia Apache.
+
 ### 3. Configurar base de datos
 
 **Desde terminal:**
@@ -46,7 +55,7 @@ C:\xampp\mysql\bin\mysql.exe -u root < crear_bd_completa.sql
 
 ### 4. Acceder al sistema
 
-Abre en tu navegador: `http://localhost/certificados/`
+Abre en tu navegador: `http://localhost/Certificados_VINUS/public/`
 
 ## 👥 Credenciales por Defecto
 
@@ -169,6 +178,17 @@ El sistema crea 3 tablas principales:
 - `VARIABLES_PLANTILLAS.md` - Guía completa de variables disponibles
 - `CONFIGURACION_BD_EMPRESAS.md` - Detalles de configuración de base de datos
 - `.env.example` - Ejemplo de configuración de entorno
+
+## 🧩 Solución de problemas
+
+### Error: Class "PhpOffice\PhpWord\TemplateProcessor" not found
+- Ejecuta `composer install`
+- Verifica que exista `vendor/autoload.php`
+
+### Error: Class "ZipArchive" not found
+- Habilita `extension=zip` en el php.ini que usa Apache/XAMPP
+- Reinicia Apache
+- Verifica con una página temporal que `zip` esté cargado en phpinfo()
 
 ## 📧 Soporte
 

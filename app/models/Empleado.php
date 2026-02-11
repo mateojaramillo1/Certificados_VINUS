@@ -6,6 +6,18 @@ use PDO;
 
 class Empleado
 {
+    public static function contarActivos(): int
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM empleados WHERE estado = 'Activo'");
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return (int)($row['total'] ?? 0);
+    }
+
     public static function authenticate($documento, $password)
     {
         $db = Database::getInstance();

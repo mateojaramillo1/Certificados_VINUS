@@ -21,6 +21,8 @@
                     <?php
                         if ($_GET['error'] === 'credenciales') {
                             echo 'Número de documento o contraseña incorrectos';
+                        } elseif ($_GET['error'] === 'timeout') {
+                            echo 'La sesión expiró por inactividad. Inicia sesión nuevamente.';
                         } else {
                             echo 'Ocurrió un error. Por favor, intente nuevamente.';
                         }

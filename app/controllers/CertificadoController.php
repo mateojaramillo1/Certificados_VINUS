@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Empleado;
 use App\Models\PlantillaWord;
 use App\Models\Empresa;
+use App\Models\HistorialCertificado;
 use App\Core\WordGenerator;
 use App\Core\PdfGenerator;
 
@@ -21,6 +22,7 @@ class CertificadoController
         $filters = [
             'q' => trim($_GET['q'] ?? ''),
             'empresa' => trim($_GET['empresa'] ?? ''),
+            'area' => trim($_GET['area'] ?? ''),
             'fecha_desde' => trim($_GET['fecha_desde'] ?? ''),
             'fecha_hasta' => trim($_GET['fecha_hasta'] ?? '')
         ];
@@ -37,32 +39,49 @@ class CertificadoController
         $filters = [
             'q' => trim($_GET['q'] ?? ''),
             'empresa' => trim($_GET['empresa'] ?? ''),
+            'area' => trim($_GET['area'] ?? ''),
             'fecha_desde' => trim($_GET['fecha_desde'] ?? ''),
             'fecha_hasta' => trim($_GET['fecha_hasta'] ?? '')
         ];
 
         $results = $this->filtrarEmpleados($filters);
 
-        $filename = 'empleados_' . date('Ymd_His') . '.csv';
+        $filename = 'empleados_' . date('Ymd_His') . '.xls';
         header('Content-Type: application/vnd.ms-excel; charset=UTF-8');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Pragma: no-cache');
         header('Expires: 0');
 
-        $output = fopen('php://output', 'w');
-        fputcsv($output, ['Nombre', 'Documento', 'Cargo', 'Empresa', 'Fecha de Ingreso'], ';');
+        echo "\xEF\xBB\xBF";
+        echo "<table border=\"1\">";
+        echo "<thead><tr>";
+        echo "<th>Nombre</th>";
+        echo "<th>Documento</th>";
+        echo "<th>Cargo</th>";
+        echo "<th>Empresa</th>";
+        echo "<th>Fecha de Ingreso</th>";
+        echo "</tr></thead>";
+        echo "<tbody>";
 
         foreach ($results as $row) {
-            fputcsv($output, [
-                $row['nombre_completo'] ?? '',
-                $row['numero_documento'] ?? '',
-                $row['cargo'] ?? '',
-                $row['nombre_empresa'] ?? '',
-                $row['fecha_ingreso'] ?? ''
-            ], ';');
+            $fechaIngreso = $row['fecha_ingreso'] ?? '';
+            if (!empty($fechaIngreso)) {
+                $dt = \DateTime::createFromFormat('Y-m-d', $fechaIngreso);
+                if ($dt) {
+                    $fechaIngreso = $dt->format('d/m/Y');
+                }
+            }
+
+            echo "<tr>";
+            echo "<td>" . htmlspecialchars($row['nombre_completo'] ?? '') . "</td>";
+            echo "<td>" . htmlspecialchars($row['numero_documento'] ?? '') . "</td>";
+            echo "<td>" . htmlspecialchars($row['cargo'] ?? '') . "</td>";
+            echo "<td>" . htmlspecialchars($row['nombre_empresa'] ?? '') . "</td>";
+            echo "<td>" . htmlspecialchars($fechaIngreso) . "</td>";
+            echo "</tr>";
         }
 
-        fclose($output);
+        echo "</tbody></table>";
         exit;
     }
 
@@ -118,6 +137,11 @@ class CertificadoController
             $params[':empresa'] = $filters['empresa'];
         }
 
+        if (!empty($filters['area'])) {
+            $sql .= " AND e.cargo LIKE :area";
+            $params[':area'] = "%{$filters['area']}%";
+        }
+
         if (!empty($filters['fecha_desde'])) {
             $sql .= " AND e.fecha_ingreso >= :fecha_desde";
             $params[':fecha_desde'] = $filters['fecha_desde'];
@@ -161,6 +185,19 @@ class CertificadoController
         $incluirSalario = filter_var($valorIncluir, FILTER_VALIDATE_BOOLEAN);
 
         $plantillaActiva = PlantillaWord::getActiva();
+
+        try {
+            HistorialCertificado::crear([
+                'id_empleado' => (int)$empleado['id_empleados'],
+                'nombre_completo' => $empleado['nombre_completo'],
+                'numero_documento' => $empleado['numero_documento'],
+                'incluir_salario' => $incluirSalario ? 1 : 0,
+                'tipo' => $plantillaActiva ? 'word' : 'pdf',
+                'generado_por' => $_SESSION['user_id'] ?? null
+            ]);
+        } catch (\Exception $e) {
+            // No interrumpir la generación si falla el historial.
+        }
 
         if ($plantillaActiva) {
             $this->generarWord($empleado, $incluirSalario);

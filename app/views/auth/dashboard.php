@@ -1,19 +1,11 @@
 <?php
-// Verificar que el usuario esté autenticado
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php?controller=auth&action=showLogin');
     exit;
 }
 
-// Obtener datos del empleado
-$empleado = \App\Models\Empleado::findById($_SESSION['user_id']);
-if (!$empleado) {
-    header('Location: index.php?controller=auth&action=logout');
-    exit;
-}
-
-// Obtener información de la empresa
-$empresa = require __DIR__ . '/../../config/company.php';
+$empleado = $empleado ?? null;
+$empresa = $empresa ?? null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -29,45 +21,55 @@ $empresa = require __DIR__ . '/../../config/company.php';
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark vinus-navbar">
         <div class="container-fluid">
-            <a class="navbar-brand vinus-brand" href="#">
+            <a class="navbar-brand vinus-brand" href="index.php?controller=auth&action=dashboard">
                 <img src="images/logo.png" alt="VINUS" class="navbar-logo" onerror="this.src='images/logo.svg'">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#vinusNavbar" aria-controls="vinusNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="vinusNavbar">
-                <div class="dashboard-actions d-flex align-items-center gap-3 flex-wrap">
-                <?php if (!empty($_SESSION['is_admin'])): ?>
-                    <div class="dropdown">
-                        <button class="btn btn-outline-light btn-sm dropdown-toggle admin-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-gear"></i> Administración
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" href="index.php?controller=certificado&action=buscar">
-                                    <i class="bi bi-search me-2"></i> Buscar Empleados
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="index.php?controller=auth&action=showRegister">
-                                    <i class="bi bi-person-plus me-2"></i> Registrar Empleado
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="index.php?controller=plantilla&action=index">
-                                    <i class="bi bi-file-word me-2"></i> Plantillas Word
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                <?php endif; ?>
-                <span class="text-white me-3">
-                    <i class="bi bi-person-circle"></i>
-                    <?php echo htmlspecialchars($empleado['nombre_completo']); ?>
-                </span>
-                <a href="index.php?controller=auth&action=logout" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                </a>
+                <ul class="navbar-nav me-auto align-items-lg-center gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link vinus-nav-link" href="index.php?controller=auth&action=dashboard">
+                            <i class="bi bi-house"></i> Inicio
+                        </a>
+                    </li>
+                    <?php if (!empty($_SESSION['is_admin'])): ?>
+                        <li class="nav-item">
+                            <a class="nav-link vinus-nav-link" href="index.php?controller=auth&action=adminDashboard">
+                                <i class="bi bi-graph-up"></i> Estadísticas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link vinus-nav-link" href="index.php?controller=certificado&action=buscar">
+                                <i class="bi bi-search"></i> Buscar Empleados
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link vinus-nav-link" href="index.php?controller=auth&action=showRegister">
+                                <i class="bi bi-person-plus"></i> Registrar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link vinus-nav-link" href="index.php?controller=auth&action=showBulkUpload">
+                                <i class="bi bi-upload"></i> Carga Masiva
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link vinus-nav-link" href="index.php?controller=plantilla&action=index">
+                                <i class="bi bi-file-word"></i> Plantillas
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-white fw-semibold">
+                        <i class="bi bi-person-circle"></i>
+                        <?php echo htmlspecialchars($empleado['nombre_completo']); ?>
+                    </span>
+                    <a href="index.php?controller=auth&action=logout" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                    </a>
                 </div>
             </div>
         </div>
@@ -81,6 +83,7 @@ $empresa = require __DIR__ . '/../../config/company.php';
             </div>
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
+
 
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -134,6 +137,7 @@ $empresa = require __DIR__ . '/../../config/company.php';
                         </div>
                     <?php endif; ?>
                 </div>
+
 
                 <!-- Opciones de Certificado -->
                 <div class="vinus-card soft mt-4">

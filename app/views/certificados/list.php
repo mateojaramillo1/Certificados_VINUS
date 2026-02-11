@@ -45,7 +45,7 @@
 
         <div class="vinus-card mb-4">
             <div class="row g-3 align-items-end">
-                <div class="col-12 col-lg-4">
+                <div class="col-12 col-lg-3">
                     <label class="form-label fw-bold">Buscar por nombre, cédula o cargo</label>
                     <input id="employeeSearch" type="search"
                            class="form-control form-control-lg"
@@ -67,6 +67,12 @@
                     </select>
                 </div>
                 <div class="col-12 col-md-6 col-lg-2">
+                    <label class="form-label fw-bold">Área</label>
+                    <input id="filterArea" type="text" class="form-control form-control-lg"
+                           placeholder="Ej: Operaciones"
+                           value="<?php echo htmlspecialchars($_GET['area'] ?? ''); ?>">
+                </div>
+                <div class="col-12 col-md-6 col-lg-2">
                     <label class="form-label fw-bold">Desde</label>
                           <input id="filterDesde" type="date" class="form-control form-control-lg"
                               value="<?php echo htmlspecialchars($_GET['fecha_desde'] ?? ''); ?>">
@@ -75,6 +81,14 @@
                     <label class="form-label fw-bold">Hasta</label>
                           <input id="filterHasta" type="date" class="form-control form-control-lg"
                               value="<?php echo htmlspecialchars($_GET['fecha_hasta'] ?? ''); ?>">
+                </div>
+                <div class="col-12 col-md-6 col-lg-1">
+                    <label class="form-label fw-bold">Orden</label>
+                    <select id="sortFecha" class="form-select form-select-lg">
+                        <option value="">Sin orden</option>
+                        <option value="asc">Más antiguo</option>
+                        <option value="desc">Más reciente</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -102,6 +116,7 @@
                             <th>Cédula</th>
                             <th>Cargo</th>
                             <th>Empresa</th>
+                            <th>Fecha de Ingreso</th>
                             <th class="text-center">Acciones del Certificado</th>
                         </tr>
                     </thead>
@@ -109,11 +124,22 @@
                     <?php foreach ($results as $r): ?>
                         <tr data-search="<?php echo htmlspecialchars(strtolower($r['nombre_completo'] . ' ' . $r['numero_documento'] . ' ' . $r['cargo'] . ' ' . ($r['nombre_empresa'] ?? ''))); ?>"
                             data-empresa-id="<?php echo htmlspecialchars($r['id_empresa'] ?? ''); ?>"
-                            data-fecha="<?php echo htmlspecialchars($r['fecha_ingreso'] ?? ''); ?>">
+                            data-fecha="<?php echo htmlspecialchars($r['fecha_ingreso'] ?? ''); ?>"
+                            data-cargo="<?php echo htmlspecialchars($r['cargo'] ?? ''); ?>">
                             <td><strong><?php echo htmlspecialchars($r['nombre_completo']); ?></strong></td>
                             <td><?php echo htmlspecialchars($r['numero_documento']); ?></td>
                             <td><?php echo htmlspecialchars($r['cargo']); ?></td>
                             <td><?php echo htmlspecialchars($r['nombre_empresa'] ?? ''); ?></td>
+                            <td>
+                                <?php if (!empty($r['fecha_ingreso'])): ?>
+                                    <?php
+                                        $fechaRow = new DateTime($r['fecha_ingreso']);
+                                        echo $fechaRow->format('d/m/Y');
+                                    ?>
+                                <?php else: ?>
+                                    —
+                                <?php endif; ?>
+                            </td>
                             <td>
                                           <div class="d-flex justify-content-center flex-wrap gap-2">
                                                 <a href="index.php?controller=certificado&action=generar&id=<?php echo $r['id_empleados']; ?>&incluir_salario=0"
@@ -142,8 +168,10 @@
         (function () {
             const input = document.getElementById('employeeSearch');
             const empresaSelect = document.getElementById('filterEmpresa');
+            const areaInput = document.getElementById('filterArea');
             const fechaDesde = document.getElementById('filterDesde');
             const fechaHasta = document.getElementById('filterHasta');
+            const sortFecha = document.getElementById('sortFecha');
             const exportLink = document.getElementById('exportExcel');
             const rowsContainer = document.getElementById('employeeRows');
             const noResults = document.getElementById('noResults');
@@ -160,23 +188,47 @@
             const applyFilter = () => {
                 const term = normalize(input.value);
                 const empresaValue = (empresaSelect && empresaSelect.value) ? empresaSelect.value : '';
+                const areaValue = (areaInput && areaInput.value) ? normalize(areaInput.value) : '';
                 const desdeValue = fechaDesde && fechaDesde.value ? fechaDesde.value : '';
                 const hastaValue = fechaHasta && fechaHasta.value ? fechaHasta.value : '';
+                const sortValue = sortFecha && sortFecha.value ? sortFecha.value : '';
                 let visibleCount = 0;
 
                 rows.forEach((row) => {
                     const haystack = normalize(row.getAttribute('data-search'));
                     const empresaId = row.getAttribute('data-empresa-id') || '';
                     const fechaIngreso = row.getAttribute('data-fecha') || '';
+                    const cargoValue = normalize(row.getAttribute('data-cargo'));
 
                     const matchTerm = term === '' || haystack.includes(term);
                     const matchEmpresa = empresaValue === '' || empresaId === empresaValue;
+                    const matchArea = areaValue === '' || cargoValue.includes(areaValue);
                     const matchDesde = desdeValue === '' || (fechaIngreso && fechaIngreso >= desdeValue);
                     const matchHasta = hastaValue === '' || (fechaIngreso && fechaIngreso <= hastaValue);
-                    const match = matchTerm && matchEmpresa && matchDesde && matchHasta;
+                    const match = matchTerm && matchEmpresa && matchArea && matchDesde && matchHasta;
                     row.style.display = match ? '' : 'none';
                     if (match) visibleCount += 1;
                 });
+
+                if (sortValue) {
+                    const sorted = rows
+                        .slice()
+                        .sort((a, b) => {
+                            const aFecha = a.getAttribute('data-fecha') || '';
+                            const bFecha = b.getAttribute('data-fecha') || '';
+
+                            if (!aFecha && !bFecha) return 0;
+                            if (!aFecha) return 1;
+                            if (!bFecha) return -1;
+
+                            if (aFecha === bFecha) return 0;
+                            return sortValue === 'asc'
+                                ? (aFecha < bFecha ? -1 : 1)
+                                : (aFecha > bFecha ? -1 : 1);
+                        });
+
+                    sorted.forEach((row) => rowsContainer.appendChild(row));
+                }
 
                 if (noResults) {
                     noResults.style.display = visibleCount === 0 ? '' : 'none';
@@ -188,6 +240,7 @@
                 const params = new URLSearchParams();
                 if (input && input.value) params.set('q', input.value);
                 if (empresaSelect && empresaSelect.value) params.set('empresa', empresaSelect.value);
+                if (areaInput && areaInput.value) params.set('area', areaInput.value);
                 if (fechaDesde && fechaDesde.value) params.set('fecha_desde', fechaDesde.value);
                 if (fechaHasta && fechaHasta.value) params.set('fecha_hasta', fechaHasta.value);
                 exportLink.href = `index.php?controller=certificado&action=exportar${params.toString() ? '&' + params.toString() : ''}`;
@@ -203,6 +256,12 @@
                     updateExportLink();
                 });
             }
+            if (areaInput) {
+                areaInput.addEventListener('input', () => {
+                    applyFilter();
+                    updateExportLink();
+                });
+            }
             if (fechaDesde) {
                 fechaDesde.addEventListener('change', () => {
                     applyFilter();
@@ -213,6 +272,11 @@
                 fechaHasta.addEventListener('change', () => {
                     applyFilter();
                     updateExportLink();
+                });
+            }
+            if (sortFecha) {
+                sortFecha.addEventListener('change', () => {
+                    applyFilter();
                 });
             }
             applyFilter();
