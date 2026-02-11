@@ -11,6 +11,9 @@ $chartAccesos = $chartAccesos ?? [];
 $chartCertificados = $chartCertificados ?? [];
 $chartCertificadosMes = $chartCertificadosMes ?? [];
 $empleadosActivos = $empleadosActivos ?? 0;
+$filtroDesde = $filtroDesde ?? '';
+$filtroHasta = $filtroHasta ?? '';
+$rangoActivo = $rangoActivo ?? false;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -85,6 +88,38 @@ $empleadosActivos = $empleadosActivos ?? 0;
             </div>
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
+
+        <div class="vinus-card soft mb-4">
+            <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-2">
+                <div>
+                    <h5 class="mb-1"><i class="bi bi-calendar3"></i> Filtrar por fecha</h5>
+                    <div class="text-muted">Aplica a accesos, certificados y graficas.</div>
+                </div>
+                <?php if ($rangoActivo): ?>
+                    <span class="vinus-pill"><i class="bi bi-funnel"></i> Rango activo</span>
+                <?php endif; ?>
+            </div>
+            <form class="row g-2 align-items-end mt-3" method="GET" action="index.php">
+                <input type="hidden" name="controller" value="auth">
+                <input type="hidden" name="action" value="adminDashboard">
+                <div class="col-12 col-md-4">
+                    <label class="form-label fw-semibold">Desde</label>
+                    <input type="date" class="form-control" name="desde" value="<?php echo htmlspecialchars($filtroDesde); ?>">
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label fw-semibold">Hasta</label>
+                    <input type="date" class="form-control" name="hasta" value="<?php echo htmlspecialchars($filtroHasta); ?>">
+                </div>
+                <div class="col-12 col-md-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-vinus-accent flex-fill">
+                        <i class="bi bi-funnel"></i> Filtrar
+                    </button>
+                    <a class="btn btn-outline-vinus flex-fill" href="index.php?controller=auth&action=adminDashboard">
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
 
         <div class="row g-4 mt-2 mb-4">
             <div class="col-12 col-lg-4">

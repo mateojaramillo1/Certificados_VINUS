@@ -40,8 +40,8 @@ a:hover{color:var(--vinus-blue-dark)}
 	position:sticky;
 	top:0;
 	z-index:1030;
-	padding:.15rem 1rem;
-	min-height:56px;
+	padding:.45rem 1.5rem;
+	min-height:72px;
 	overflow:visible;
 }
 .vinus-navbar .navbar-brand{
@@ -65,28 +65,38 @@ a:hover{color:var(--vinus-blue-dark)}
 .vinus-navbar .navbar-brand:hover{opacity:.9}
 
 .navbar-logo{
-	width:190px;
-	height:190px;
+	width:150px;
+	height:150px;
 	object-fit:contain;
 	background:transparent;
 	border-radius:0;
 	padding:0;
 	box-shadow:none;
 	filter:none;
-	margin-top:-40px;
-	margin-bottom:-40px;
+	margin-top:-24px;
+	margin-bottom:-24px;
 	pointer-events:none;
 }
 
 .vinus-navbar .navbar-brand img.navbar-logo{
-	width:190px !important;
-	height:190px !important;
-	max-height:190px !important;
+	width:150px !important;
+	height:150px !important;
+	max-height:150px !important;
 }
 
 .vinus-navbar .navbar-collapse{
 	position:relative;
 	z-index:2;
+}
+
+.vinus-navbar .navbar-nav{
+	gap:.85rem;
+	row-gap:.45rem;
+	flex-wrap:wrap;
+}
+
+.vinus-navbar .navbar-collapse > .d-flex{
+	gap:1rem;
 }
 
 .vinus-navbar .dashboard-actions{
@@ -121,6 +131,12 @@ a:hover{color:var(--vinus-blue-dark)}
 		gap:.5rem;
 		position:relative;
 	}
+	.vinus-navbar .navbar-logo{
+		width:130px;
+		height:130px;
+		margin-top:-18px;
+		margin-bottom:-18px;
+	}
 	.vinus-navbar .navbar-brand{order:1;margin-right:auto}
 	.vinus-navbar .navbar-toggler{
 		order:2;
@@ -151,12 +167,17 @@ a:hover{color:var(--vinus-blue-dark)}
 	color:#0f172a !important;
 	background:transparent;
 	border:none;
-	padding:.35rem .35rem;
+	font-size:.92rem;
+	padding:.6rem .75rem;
 	border-radius:0;
 	font-weight:600;
 	letter-spacing:.2px;
 	position:relative;
 	transition:color .2s ease;
+}
+
+.vinus-navbar .text-white{
+	font-size:.92rem;
 }
 .vinus-nav-link:hover{
 	color:var(--vinus-blue-dark) !important;
@@ -366,7 +387,46 @@ a:hover{color:var(--vinus-blue-dark)}
 	min-height:100vh;
 	min-height:100dvh;
 }
+.auth-body .vinus-navbar{
+	padding:.6rem 1.5rem;
+	min-height:72px;
+}
+.auth-body .vinus-navbar .container-fluid{
+	gap:1rem;
+}
+.auth-body .vinus-navbar .navbar-brand{
+	padding:.2rem 0;
+}
+.auth-body .vinus-navbar .navbar-logo{
+	width:150px;
+	height:150px;
+	margin-top:-24px;
+	margin-bottom:-24px;
+}
+.auth-body .vinus-navbar .navbar-collapse .ms-auto{
+	display:flex;
+	align-items:center;
+	gap:.75rem;
+	padding-right:.25rem;
+}
 .auth-login{overflow-y:hidden}
+@media (max-width: 991.98px){
+	.auth-body .vinus-navbar{
+		min-height:92px;
+		padding:.75rem 1rem;
+	}
+	.auth-body .vinus-navbar .navbar-logo{
+		width:130px;
+		height:130px;
+		margin-top:-18px;
+		margin-bottom:-18px;
+	}
+	.auth-body .vinus-navbar .navbar-collapse .ms-auto{
+		justify-content:flex-start;
+		padding-top:.5rem;
+		padding-right:0;
+	}
+}
 .auth-page::before,
 .auth-page::after{
 	content:"";

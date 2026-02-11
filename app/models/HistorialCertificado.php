@@ -124,4 +124,65 @@ class HistorialCertificado
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public static function ultimosPorRango(string $desde, string $hasta, int $limit = 15): array
+    {
+        self::ensureTable();
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare("
+            SELECT *
+            FROM historial_certificados
+            WHERE created_at >= :desde AND created_at <= :hasta
+            ORDER BY created_at DESC
+            LIMIT :limit
+        ");
+        $stmt->bindValue(':desde', $desde . ' 00:00:00', PDO::PARAM_STR);
+        $stmt->bindValue(':hasta', $hasta . ' 23:59:59', PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function conteoPorDiaRango(string $desde, string $hasta): array
+    {
+        self::ensureTable();
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare("
+            SELECT DATE(created_at) as fecha, COUNT(*) as total
+            FROM historial_certificados
+            WHERE created_at >= :desde AND created_at <= :hasta
+            GROUP BY DATE(created_at)
+            ORDER BY DATE(created_at) ASC
+        ");
+        $stmt->bindValue(':desde', $desde . ' 00:00:00', PDO::PARAM_STR);
+        $stmt->bindValue(':hasta', $hasta . ' 23:59:59', PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function conteoPorMesRango(string $desde, string $hasta): array
+    {
+        self::ensureTable();
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare("
+            SELECT DATE_FORMAT(created_at, '%Y-%m') as periodo, COUNT(*) as total
+            FROM historial_certificados
+            WHERE created_at >= :desde AND created_at <= :hasta
+            GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+            ORDER BY DATE_FORMAT(created_at, '%Y-%m') ASC
+        ");
+        $stmt->bindValue(':desde', $desde . ' 00:00:00', PDO::PARAM_STR);
+        $stmt->bindValue(':hasta', $hasta . ' 23:59:59', PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

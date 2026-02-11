@@ -346,13 +346,33 @@ class AuthController
         $chartCertificados = [];
         $chartCertificadosMes = [];
         $empleadosActivos = 0;
+        $filtroDesde = '';
+        $filtroHasta = '';
+        $rangoActivo = false;
+
+        $filtroDesde = $this->normalizeDateInput($_GET['desde'] ?? '');
+        $filtroHasta = $this->normalizeDateInput($_GET['hasta'] ?? '');
+        if ($filtroDesde !== '' && $filtroHasta !== '' && $filtroDesde > $filtroHasta) {
+            $tmp = $filtroDesde;
+            $filtroDesde = $filtroHasta;
+            $filtroHasta = $tmp;
+        }
+        $rangoActivo = $filtroDesde !== '' && $filtroHasta !== '';
 
         try {
-            $historialAccesos = HistorialAcceso::ultimos(15);
-            $historialCertificados = HistorialCertificado::ultimos(15);
-            $chartAccesos = HistorialAcceso::conteoPorDia(7);
-            $chartCertificados = HistorialCertificado::conteoPorDia(7);
-            $chartCertificadosMes = HistorialCertificado::conteoPorMes(6);
+            if ($rangoActivo) {
+                $historialAccesos = HistorialAcceso::ultimosPorRango($filtroDesde, $filtroHasta, 15);
+                $historialCertificados = HistorialCertificado::ultimosPorRango($filtroDesde, $filtroHasta, 15);
+                $chartAccesos = HistorialAcceso::conteoPorDiaRango($filtroDesde, $filtroHasta);
+                $chartCertificados = HistorialCertificado::conteoPorDiaRango($filtroDesde, $filtroHasta);
+                $chartCertificadosMes = HistorialCertificado::conteoPorMesRango($filtroDesde, $filtroHasta);
+            } else {
+                $historialAccesos = HistorialAcceso::ultimos(15);
+                $historialCertificados = HistorialCertificado::ultimos(15);
+                $chartAccesos = HistorialAcceso::conteoPorDia(7);
+                $chartCertificados = HistorialCertificado::conteoPorDia(7);
+                $chartCertificadosMes = HistorialCertificado::conteoPorMes(6);
+            }
             $empleadosActivos = Empleado::contarActivos();
         } catch (\Exception $e) {
             // No interrumpir el panel si falla el historial.
@@ -442,6 +462,17 @@ class AuthController
             return date('Y-m-d', $timestamp);
         }
 
+        return '';
+    }
+
+    private function normalizeDateInput($value): string
+    {
+        $value = trim((string)$value);
+        if ($value === '') return '';
+        $dt = \DateTime::createFromFormat('Y-m-d', $value);
+        if ($dt instanceof \DateTime) {
+            return $dt->format('Y-m-d');
+        }
         return '';
     }
 
